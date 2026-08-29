@@ -12,7 +12,7 @@
   }
 }
 
-/* Custom scrollbar matching initial plum & rose palette */
+/* Custom scrollbar matching plum & rose palette */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -29,4 +29,9 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #DE4373;
+}
+
+/* Hardware-accelerated smooth rendering */
+canvas, img, [class*="backdrop-blur"] {
+  transform: translateZ(0);
 }

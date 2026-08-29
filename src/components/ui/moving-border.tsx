@@ -54,7 +54,7 @@ export function Button({
 
       <div
         className={cn(
-          "relative bg-[#3E232B] border border-white/10 backdrop-blur-xl text-white flex items-center justify-center w-full h-full text-sm font-semibold transition-colors",
+          "relative bg-[#3E232B] border border-white/10 text-white flex items-center justify-center w-full h-full text-sm font-semibold transition-colors",
           className
         )}
         style={{
@@ -84,21 +84,41 @@ export const MovingBorder = ({
   const progress = useMotionValue<number>(0);
 
   useAnimationFrame((time) => {
-    const length = pathRef.current?.getTotalLength();
-    if (length) {
-      const pxPerMillisecond = length / duration;
-      progress.set((time * pxPerMillisecond) % length);
+    try {
+      if (!pathRef.current) return;
+      const length = pathRef.current.getTotalLength();
+      if (length && length > 0) {
+        const pxPerMillisecond = length / duration;
+        progress.set((time * pxPerMillisecond) % length);
+      }
+    } catch {
+      // Safely catch when SVG path is empty or hidden during initial render
     }
   });
 
-  const x = useTransform(
-    progress,
-    (val) => pathRef.current?.getPointAtLength(val).x
-  );
-  const y = useTransform(
-    progress,
-    (val) => pathRef.current?.getPointAtLength(val).y
-  );
+  const x = useTransform(progress, (val) => {
+    try {
+      if (!pathRef.current) return 0;
+      const length = pathRef.current.getTotalLength?.() ?? 0;
+      if (!length || length <= 0) return 0;
+      const pt = pathRef.current.getPointAtLength(val);
+      return pt?.x ?? 0;
+    } catch {
+      return 0;
+    }
+  });
+
+  const y = useTransform(progress, (val) => {
+    try {
+      if (!pathRef.current) return 0;
+      const length = pathRef.current.getTotalLength?.() ?? 0;
+      if (!length || length <= 0) return 0;
+      const pt = pathRef.current.getPointAtLength(val);
+      return pt?.y ?? 0;
+    } catch {
+      return 0;
+    }
+  });
 
   const transform = useMotionTemplate`translateX(${x}px) translateY(${y}px) translateX(-50%) translateY(-50%)`;
 

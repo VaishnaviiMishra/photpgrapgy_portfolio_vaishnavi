@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { createNoise3D } from "simplex-noise";
 
 export const WavyBackground = ({
@@ -29,23 +29,8 @@ export const WavyBackground = ({
 }) => {
   const noise = createNoise3D();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Check if the current device is mobile or touch-primary
-    const checkMobile = () => {
-      const isTouchOrSmall =
-        window.innerWidth < 768 ||
-        window.matchMedia("(pointer: coarse)").matches ||
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      setIsMobile(isTouchOrSmall);
-      return isTouchOrSmall;
-    };
-
-    const isSmall = checkMobile();
-    // Do NOT run the 60fps canvas loop on mobile phones to protect battery & GPU
-    if (isSmall) return;
-
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -93,10 +78,6 @@ export const WavyBackground = ({
     };
 
     const handleResize = () => {
-      if (checkMobile()) {
-        cancelAnimationFrame(animationId);
-        return;
-      }
       if (!canvas) return;
       w = canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
       h = canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
@@ -118,28 +99,17 @@ export const WavyBackground = ({
         containerClassName
       )}
     >
-      {/* Mobile-optimized static lightweight gradient (Zero GPU overhead on mobile phones) */}
-      {isMobile ? (
-        <div
-          className="absolute inset-0 pointer-events-none -z-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 50% at 50% -20%, rgba(222,67,115,0.28), transparent 70%), linear-gradient(180deg, #3E232B 0%, #2A151D 100%)",
-          }}
-        />
-      ) : (
-        /* Desktop Canvas with Hardware-Accelerated Blur */
-        <canvas
-          className="absolute inset-0 z-0 pointer-events-none w-full h-full"
-          ref={canvasRef}
-          id="wavy-canvas"
-          style={{
-            filter: `blur(${blur}px)`,
-            transform: "translate3d(0, 0, 0)",
-            willChange: "transform",
-          }}
-        />
-      )}
+      {/* Hardware-Accelerated Smooth Wavy Canvas */}
+      <canvas
+        className="absolute inset-0 z-0 pointer-events-none w-full h-full"
+        ref={canvasRef}
+        id="wavy-canvas"
+        style={{
+          filter: `blur(${blur}px)`,
+          transform: "translate3d(0, 0, 0)",
+          willChange: "transform",
+        }}
+      />
 
       <div className={cn("relative z-10 w-full", className)} {...props}>
         {children}
