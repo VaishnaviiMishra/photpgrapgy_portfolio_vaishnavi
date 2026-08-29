@@ -21,8 +21,8 @@ import {
 } from 'lucide-react';
 import { Photo, PhotoCategory } from '../types';
 
-const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dcilsfof2';
-const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'portfolio_uploads';
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 interface AddPhotoPageProps {
   onBack: () => void;
@@ -268,8 +268,8 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
                       type="button"
                       onClick={() => setCategory(opt.value)}
                       className={`p-4 rounded-2xl text-left border transition-all cursor-pointer ${isSelected
-                          ? 'bg-[#4B2834] border-[#DE4373] text-white shadow-lg ring-1 ring-[#DE4373]'
-                          : 'bg-[#2C131C] border-white/5 text-rose-200/70 hover:border-white/20 hover:text-white'
+                        ? 'bg-[#4B2834] border-[#DE4373] text-white shadow-lg ring-1 ring-[#DE4373]'
+                        : 'bg-[#2C131C] border-white/5 text-rose-200/70 hover:border-white/20 hover:text-white'
                         }`}
                     >
                       <span className={`text-xs font-bold block ${isSelected ? 'text-[#DE4373]' : 'text-white'}`}>
@@ -316,8 +316,8 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
                   onDrop={handleDrop}
                   onClick={() => !isUploading && fileInputRef.current?.click()}
                   className={`border-2 border-dashed bg-[#2C131C] rounded-3xl p-8 text-center transition-all space-y-3 group ${isUploading
-                      ? 'border-[#DE4373] cursor-wait opacity-80'
-                      : 'border-white/15 hover:border-[#DE4373] cursor-pointer'
+                    ? 'border-[#DE4373] cursor-wait opacity-80'
+                    : 'border-white/15 hover:border-[#DE4373] cursor-pointer'
                     }`}
                 >
                   <input
@@ -332,7 +332,7 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
                     <div className="py-8 space-y-3">
                       <Loader2 className="w-10 h-10 text-[#DE4373] animate-spin mx-auto" />
                       <p className="text-sm font-bold text-white">
-                        Uploading directly to Cloudinary (<span className="text-[#FF8DA1]">dcilsfof2</span>)...
+                        Uploading directly to Cloudinary (<span className="text-[#FF8DA1]">.</span>)...
                       </p>
                       <p className="text-xs text-rose-300/70">
                         Generating high-speed CDN URL and responsive formats
