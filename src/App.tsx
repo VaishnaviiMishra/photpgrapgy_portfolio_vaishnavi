@@ -324,14 +324,14 @@ export default function App() {
         photo={lightboxPhoto}
         photosList={photos.filter((p) => {
           if (activeCategory === 'top') {
-            return favorites.has(p.id) || p.isFeatured;
+            return favorites.has(p.id);
           }
           if (activeCategory === 'all') return true;
           return p.category === activeCategory;
         })}
         onClose={() => setLightboxPhoto(null)}
         onSelectPhoto={(photo) => setLightboxPhoto(photo)}
-        isFavorite={lightboxPhoto ? (favorites.has(lightboxPhoto.id) || lightboxPhoto.isFeatured) : false}
+        isFavorite={lightboxPhoto ? favorites.has(lightboxPhoto.id) : false}
       />
 
     </div>

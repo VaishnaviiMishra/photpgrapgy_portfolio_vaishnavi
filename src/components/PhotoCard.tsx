@@ -17,8 +17,6 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
   onOpenLightbox,
   isFavorite = false,
 }) => {
-  const isTopPick = isFavorite || photo.isFeatured;
-
   return (
     <div 
       className="group relative bg-[#3C1F28] border border-white/10 hover:border-[#DE4373]/70 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col cursor-pointer"
@@ -51,11 +49,13 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
             )}
           </div>
 
-          {/* Curated Top Pick Badge */}
-          {isTopPick && (
-            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#361B24]/90 backdrop-blur-md border border-amber-400/40 text-amber-300 text-[10px] font-bold uppercase tracking-wider shadow">
-              <Star className="w-3 h-3 fill-amber-300 text-amber-300" />
-              <span>Top Pick</span>
+          {/* Minimal Curated Star Badge */}
+          {isFavorite && (
+            <div 
+              className="p-1.5 rounded-full bg-[#2A131A]/90 backdrop-blur-md border border-amber-400/50 text-amber-300 shadow flex items-center justify-center"
+              title="Top Pick"
+            >
+              <Star className="w-3.5 h-3.5 fill-amber-300 text-amber-300" />
             </div>
           )}
         </div>

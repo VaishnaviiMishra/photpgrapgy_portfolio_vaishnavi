@@ -9,7 +9,7 @@ import {
   X,
   Star
 } from 'lucide-react';
-import { Photo, PhotoCategory } from '../types';
+import { Photo } from '../types';
 import { PhotoCard } from './PhotoCard';
 
 interface PortfolioSectionProps {
@@ -64,10 +64,9 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   // Filter photos based on category and search
   const filteredPhotos = useMemo(() => {
     return photos.filter((photo) => {
-      // Top Photos check: curated top picks from creator
+      // Top Photos check: STRICTLY respects creator curated favorites
       if (activeCategory === 'top') {
-        const isTop = favorites.has(photo.id) || photo.isFeatured;
-        if (!isTop) return false;
+        if (!favorites.has(photo.id)) return false;
       } else if (activeCategory !== 'all' && !isCategoryMatch(photo.category, activeCategory)) {
         return false;
       }
@@ -93,7 +92,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   // Count per category
   const getCategoryCount = (catId: string) => {
     if (catId === 'top') {
-      return photos.filter((p) => favorites.has(p.id) || p.isFeatured).length;
+      return photos.filter((p) => favorites.has(p.id)).length;
     }
     if (catId === 'all') {
       return photos.length;
@@ -134,7 +133,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-rose-300 hover:text-white"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-rose-300 hover:text-white cursor-pointer"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -145,14 +144,14 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
             <div className="hidden sm:flex items-center gap-1 p-1 rounded-full bg-[#42222D] border border-white/10">
               <button
                 onClick={() => setViewColumns('2-col')}
-                className={`p-1.5 rounded-full transition-colors ${viewColumns === '2-col' ? 'bg-[#DE4373] text-white' : 'text-rose-200/70 hover:text-white'}`}
+                className={`p-1.5 rounded-full transition-colors cursor-pointer ${viewColumns === '2-col' ? 'bg-[#DE4373] text-white' : 'text-rose-200/70 hover:text-white'}`}
                 title="2 Columns Layout"
               >
                 <Columns className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setViewColumns('3-col')}
-                className={`p-1.5 rounded-full transition-colors ${viewColumns === '3-col' ? 'bg-[#DE4373] text-white' : 'text-rose-200/70 hover:text-white'}`}
+                className={`p-1.5 rounded-full transition-colors cursor-pointer ${viewColumns === '3-col' ? 'bg-[#DE4373] text-white' : 'text-rose-200/70 hover:text-white'}`}
                 title="3 Columns Layout"
               >
                 <LayoutGrid className="w-3.5 h-3.5" />
@@ -212,6 +211,8 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               <p className="text-xs text-rose-200/70 max-w-md mx-auto">
                 {searchQuery
                   ? `No photos found matching "${searchQuery}". Try a different keyword.`
+                  : activeCategory === 'top'
+                  ? 'No photos are currently marked as Top Picks. Star photos on /addphoto to curate your top collection!'
                   : 'There are currently no photos in this selection.'}
               </p>
             </div>
@@ -219,11 +220,11 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               <button
                 onClick={() => {
                   setSearchQuery('');
-                  onSelectCategory('top');
+                  onSelectCategory('all');
                 }}
                 className="px-5 py-2.5 rounded-full bg-[#4A2632] hover:bg-[#58303D] text-white text-xs font-semibold border border-white/10 cursor-pointer"
               >
-                Clear Filters
+                View All Photos
               </button>
             </div>
           </div>

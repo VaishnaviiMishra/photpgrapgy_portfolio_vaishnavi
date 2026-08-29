@@ -30,7 +30,7 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
   const currentIndex = photosList.findIndex((p) => p.id === photo.id);
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < photosList.length - 1;
-  const isTopPick = isFavorite || photo.isFeatured;
+  const isTopPick = isFavorite;
 
   const handlePrev = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -128,11 +128,13 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
             <span className="text-xs font-mono text-rose-200/70">
               {currentIndex + 1} of {photosList.length}
             </span>
-            {isTopPick && (
-              <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-950/60 border border-amber-400/40 text-amber-300 text-[10px] font-bold uppercase tracking-wider">
-                <Star className="w-2.5 h-2.5 fill-amber-300" />
-                Top Pick
-              </span>
+            {isFavorite && (
+              <div 
+                className="p-1 rounded-full bg-amber-950/70 border border-amber-400/50 text-amber-300 flex items-center justify-center shadow"
+                title="Top Pick"
+              >
+                <Star className="w-3 h-3 fill-amber-300 text-amber-300" />
+              </div>
             )}
           </div>
 

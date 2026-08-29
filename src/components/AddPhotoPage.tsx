@@ -214,7 +214,7 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
   // Filter photos for the management section
   const managedPhotos = photos.filter((p) => {
     if (manageCategoryFilter === 'top') {
-      if (!favorites.has(p.id) && !p.isFeatured) return false;
+      if (!favorites.has(p.id)) return false;
     } else if (manageCategoryFilter === 'custom') {
       if (!p.isUserAdded) return false;
     } else if (manageCategoryFilter !== 'all') {
@@ -594,7 +594,7 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
                 }`}
               >
                 <Star className="w-3 h-3 fill-current" />
-                <span>Top Picks ({photos.filter(p => favorites.has(p.id) || p.isFeatured).length})</span>
+                <span>Top Picks ({photos.filter(p => favorites.has(p.id)).length})</span>
               </button>
               <button
                 onClick={() => setManageCategoryFilter('custom')}
@@ -613,7 +613,7 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
           {/* Photo Management Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {managedPhotos.map((photo) => {
-              const isTopPick = favorites.has(photo.id) || photo.isFeatured;
+              const isTopPick = favorites.has(photo.id);
               return (
                 <div
                   key={photo.id}
