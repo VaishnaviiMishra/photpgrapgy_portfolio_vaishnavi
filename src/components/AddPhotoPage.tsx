@@ -181,7 +181,7 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
     setSettings('');
     setTagsInput('');
     setPublishedSuccessMsg(`"${newPhoto.title}" has been successfully published to your portfolio!`);
-    
+
     // Auto-clear success message after 5 seconds
     setTimeout(() => {
       setPublishedSuccessMsg(null);
@@ -208,19 +208,12 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
               <span className="text-[11px] text-rose-200/70">Ingest & Manage Photography Portfolio</span>
             </div>
           </div>
-
-          <div className="flex items-center gap-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#46222F] border border-white/10 text-xs text-rose-200">
-              <CloudUpload className="w-3.5 h-3.5 text-[#DE4373]" />
-              <span>Cloudinary: <code className="text-[#FF8DA1] font-mono">dcilsfof2</code></span>
-            </div>
-          </div>
         </div>
       </header>
 
       {/* Main Studio Body */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-        
+
         {/* Title & Introduction */}
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4A2632] border border-white/10 text-[#DE4373] text-xs font-semibold uppercase tracking-wider">
@@ -274,11 +267,10 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
                       key={opt.value}
                       type="button"
                       onClick={() => setCategory(opt.value)}
-                      className={`p-4 rounded-2xl text-left border transition-all cursor-pointer ${
-                        isSelected
+                      className={`p-4 rounded-2xl text-left border transition-all cursor-pointer ${isSelected
                           ? 'bg-[#4B2834] border-[#DE4373] text-white shadow-lg ring-1 ring-[#DE4373]'
                           : 'bg-[#2C131C] border-white/5 text-rose-200/70 hover:border-white/20 hover:text-white'
-                      }`}
+                        }`}
                     >
                       <span className={`text-xs font-bold block ${isSelected ? 'text-[#DE4373]' : 'text-white'}`}>
                         {opt.label}
@@ -302,18 +294,16 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
                   <button
                     type="button"
                     onClick={() => setInputMode('upload')}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                      inputMode === 'upload' ? 'bg-gradient-to-r from-[#DE4373] to-[#BF2C5B] text-white font-bold' : 'text-rose-200/70 hover:text-white'
-                    }`}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${inputMode === 'upload' ? 'bg-gradient-to-r from-[#DE4373] to-[#BF2C5B] text-white font-bold' : 'text-rose-200/70 hover:text-white'
+                      }`}
                   >
                     Direct Upload
                   </button>
                   <button
                     type="button"
                     onClick={() => setInputMode('url')}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                      inputMode === 'url' ? 'bg-gradient-to-r from-[#DE4373] to-[#BF2C5B] text-white font-bold' : 'text-rose-200/70 hover:text-white'
-                    }`}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${inputMode === 'url' ? 'bg-gradient-to-r from-[#DE4373] to-[#BF2C5B] text-white font-bold' : 'text-rose-200/70 hover:text-white'
+                      }`}
                   >
                     Image URL
                   </button>
@@ -325,11 +315,10 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={handleDrop}
                   onClick={() => !isUploading && fileInputRef.current?.click()}
-                  className={`border-2 border-dashed bg-[#2C131C] rounded-3xl p-8 text-center transition-all space-y-3 group ${
-                    isUploading 
-                      ? 'border-[#DE4373] cursor-wait opacity-80' 
+                  className={`border-2 border-dashed bg-[#2C131C] rounded-3xl p-8 text-center transition-all space-y-3 group ${isUploading
+                      ? 'border-[#DE4373] cursor-wait opacity-80'
                       : 'border-white/15 hover:border-[#DE4373] cursor-pointer'
-                  }`}
+                    }`}
                 >
                   <input
                     ref={fileInputRef}
