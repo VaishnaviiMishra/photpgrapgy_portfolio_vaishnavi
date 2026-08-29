@@ -11,8 +11,8 @@ import { Footer } from './components/Footer';
 import { LightboxModal } from './components/LightboxModal';
 import { AddPhotoPage } from './components/AddPhotoPage';
 
-const STORAGE_KEY = 'vaishnavi_portfolio_photos_v10';
-const FAVORITES_KEY = 'vaishnavi_portfolio_favorites_v10';
+const STORAGE_KEY = 'vaishnavi_portfolio_photos_v11';
+const FAVORITES_KEY = 'vaishnavi_portfolio_favorites_v11';
 
 export default function App() {
   // Routing state ('/' or '/addphoto')
@@ -66,7 +66,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Photos state loaded with local persistence
+  // Photos state loaded with initial photos and local persistence
   const [photos, setPhotos] = useState<Photo[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -82,7 +82,7 @@ export default function App() {
     return INITIAL_PHOTOS;
   });
 
-  // Favorites state initialized with top featured picks
+  // Top Picks (favorites) state
   const [favorites, setFavorites] = useState<Set<string>>(() => {
     try {
       const saved = localStorage.getItem(FAVORITES_KEY);
@@ -97,7 +97,7 @@ export default function App() {
     return initialFavs;
   });
 
-  // Active navigation & category filter state (defaults to 'top')
+  // Active category filter state (defaults to 'top')
   const [activeCategory, setActiveCategory] = useState<string>('top');
   
   // Lightbox Modal state
@@ -105,6 +105,37 @@ export default function App() {
 
   // Contact prefilled service
   const [contactPrefilledService, setContactPrefilledService] = useState<string>('');
+
+  // 1. Fetch serverless database photos and top picks on mount
+  useEffect(() => {
+    async function loadServerData() {
+      try {
+        const res = await fetch('/api/photos');
+        if (res.ok) {
+          const data = await res.json();
+          
+          // Merge custom photos from database
+          if (Array.isArray(data.customPhotos)) {
+            const customMap = new Map(data.customPhotos.map((p: Photo) => [p.id, p]));
+            setPhotos((prev) => {
+              const baseList = INITIAL_PHOTOS.filter((p) => !customMap.has(p.id));
+              const merged = [...data.customPhotos, ...baseList];
+              return merged;
+            });
+          }
+
+          // Merge top picks
+          if (Array.isArray(data.topPicks) && data.topPicks.length > 0) {
+            setFavorites(new Set(data.topPicks));
+          }
+        }
+      } catch (err) {
+        console.warn('Could not load photos from database API:', err);
+      }
+    }
+
+    loadServerData();
+  }, []);
 
   // Persist photos to localStorage
   useEffect(() => {
@@ -125,16 +156,76 @@ export default function App() {
   }, [favorites]);
 
   // Add new photo handler
-  const handleAddPhoto = (newPhoto: Photo) => {
-    setPhotos((prev) => [newPhoto, ...prev]);
+  const handleAddPhoto = async (newPhoto: Photo) => {
+    setPhotos((prev) => [newPhoto, ...prev.filter(p => p.id !== newPhoto.id)]);
     setActiveCategory(newPhoto.category);
+
+    try {
+      await fetch('/api/photos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newPhoto),
+      });
+    } catch (err) {
+      console.warn('Failed to persist new photo to database:', err);
+    }
   };
 
   // Delete user added photo handler
-  const handleDeleteUserPhoto = (id: string) => {
+  const handleDeleteUserPhoto = async (id: string) => {
     setPhotos((prev) => prev.filter((p) => p.id !== id));
+    setFavorites((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
     if (lightboxPhoto?.id === id) {
       setLightboxPhoto(null);
+    }
+
+    try {
+      await fetch(`/api/photos?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.warn('Failed to delete photo from database:', err);
+    }
+  };
+
+  // Toggle Top Pick (Creator only from /addphoto)
+  const handleToggleTopPick = async (id: string) => {
+    let isNowFeatured = false;
+
+    setFavorites((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+        isNowFeatured = false;
+      } else {
+        next.add(id);
+        isNowFeatured = true;
+      }
+      return next;
+    });
+
+    setPhotos((prev) =>
+      prev.map((p) => {
+        if (p.id === id) {
+          return { ...p, isFeatured: isNowFeatured };
+        }
+        return p;
+      })
+    );
+
+    // Sync with database API
+    try {
+      await fetch('/api/photos', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ photoId: id, isFeatured: isNowFeatured }),
+      });
+    } catch (err) {
+      console.warn('Failed to update Top Pick status in database:', err);
     }
   };
 
@@ -148,19 +239,6 @@ export default function App() {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(FAVORITES_KEY);
     }
-  };
-
-  // Toggle favorite photo
-  const handleToggleFavorite = (id: string) => {
-    setFavorites((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
   };
 
   // Handle explore portfolio click from Hero
@@ -191,6 +269,8 @@ export default function App() {
         onAddPhoto={handleAddPhoto}
         photos={photos}
         onDeleteUserPhoto={handleDeleteUserPhoto}
+        favorites={favorites}
+        onToggleTopPick={handleToggleTopPick}
       />
     );
   }
@@ -215,15 +295,13 @@ export default function App() {
         {/* The Photographer Biography & Journey */}
         <AboutSection />
 
-        {/* Portfolio Gallery Showcase with Advanced Filter & EXIF Details */}
+        {/* Portfolio Gallery Showcase with Curated Top Picks */}
         <PortfolioSection
           photos={photos}
           activeCategory={activeCategory}
           onSelectCategory={setActiveCategory}
           onOpenLightbox={(photo) => setLightboxPhoto(photo)}
           favorites={favorites}
-          onToggleFavorite={handleToggleFavorite}
-          onDeleteUserPhoto={handleDeleteUserPhoto}
           onResetToDefault={handleResetToDefault}
         />
 
@@ -245,15 +323,15 @@ export default function App() {
       <LightboxModal
         photo={lightboxPhoto}
         photosList={photos.filter((p) => {
-          if (activeCategory === 'top' || activeCategory === 'all') {
-            return favorites.size > 0 ? favorites.has(p.id) : p.isFeatured;
+          if (activeCategory === 'top') {
+            return favorites.has(p.id) || p.isFeatured;
           }
+          if (activeCategory === 'all') return true;
           return p.category === activeCategory;
         })}
         onClose={() => setLightboxPhoto(null)}
         onSelectPhoto={(photo) => setLightboxPhoto(photo)}
-        isFavorite={lightboxPhoto ? favorites.has(lightboxPhoto.id) : false}
-        onToggleFavorite={handleToggleFavorite}
+        isFavorite={lightboxPhoto ? (favorites.has(lightboxPhoto.id) || lightboxPhoto.isFeatured) : false}
       />
 
     </div>

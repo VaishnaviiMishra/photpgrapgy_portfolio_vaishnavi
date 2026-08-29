@@ -3,7 +3,7 @@ import {
   X, 
   ChevronLeft, 
   ChevronRight, 
-  Heart, 
+  Star,
   Share2, 
   ExternalLink,
   Mail
@@ -15,8 +15,7 @@ interface LightboxModalProps {
   photosList: Photo[];
   onClose: () => void;
   onSelectPhoto: (photo: Photo) => void;
-  isFavorite: boolean;
-  onToggleFavorite: (id: string) => void;
+  isFavorite?: boolean;
 }
 
 export const LightboxModal: React.FC<LightboxModalProps> = ({
@@ -24,14 +23,14 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
   photosList,
   onClose,
   onSelectPhoto,
-  isFavorite,
-  onToggleFavorite,
+  isFavorite = false,
 }) => {
   if (!photo) return null;
 
   const currentIndex = photosList.findIndex((p) => p.id === photo.id);
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < photosList.length - 1;
+  const isTopPick = isFavorite || photo.isFeatured;
 
   const handlePrev = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -129,20 +128,15 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
             <span className="text-xs font-mono text-rose-200/70">
               {currentIndex + 1} of {photosList.length}
             </span>
+            {isTopPick && (
+              <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-950/60 border border-amber-400/40 text-amber-300 text-[10px] font-bold uppercase tracking-wider">
+                <Star className="w-2.5 h-2.5 fill-amber-300" />
+                Top Pick
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => onToggleFavorite(photo.id)}
-              className={`p-2 rounded-full border transition-all cursor-pointer shadow ${
-                isFavorite 
-                  ? 'bg-gradient-to-r from-[#DE4373] to-[#BF2C5B] text-white border-transparent' 
-                  : 'bg-[#4A2632] border-white/10 text-rose-200 hover:text-white'
-              }`}
-              title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-            >
-              <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
-            </button>
             <button
               onClick={handleShare}
               className="p-2 rounded-full bg-[#4A2632] hover:bg-[#582E3C] border border-white/10 text-rose-200 hover:text-white transition-colors cursor-pointer shadow"

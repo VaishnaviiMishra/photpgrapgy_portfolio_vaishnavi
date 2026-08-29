@@ -1,27 +1,24 @@
 import React from 'react';
 import { 
   Maximize2, 
-  Heart, 
-  Trash2,
-  Sparkles
+  Sparkles,
+  Star
 } from 'lucide-react';
 import { Photo } from '../types';
 
 interface PhotoCardProps {
   photo: Photo;
   onOpenLightbox: (photo: Photo) => void;
-  isFavorite: boolean;
-  onToggleFavorite: (id: string) => void;
-  onDeleteUserPhoto?: (id: string) => void;
+  isFavorite?: boolean;
 }
 
 export const PhotoCard: React.FC<PhotoCardProps> = ({
   photo,
   onOpenLightbox,
-  isFavorite,
-  onToggleFavorite,
-  onDeleteUserPhoto,
+  isFavorite = false,
 }) => {
+  const isTopPick = isFavorite || photo.isFeatured;
+
   return (
     <div 
       className="group relative bg-[#3C1F28] border border-white/10 hover:border-[#DE4373]/70 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col cursor-pointer"
@@ -40,9 +37,9 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
         {/* Subtle Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#261218]/90 via-[#261218]/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
 
-        {/* Top Badges & Actions */}
+        {/* Top Badges */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 flex-wrap">
             <span className="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#2A131A]/90 backdrop-blur-md border border-[#DE4373]/60 text-white shadow">
               {photo.categoryLabel || photo.category}
             </span>
@@ -54,39 +51,13 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
             )}
           </div>
 
-          <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-            {/* Favorite button */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleFavorite(photo.id);
-              }}
-              className={`p-2 rounded-full transition-transform hover:scale-110 active:scale-95 shadow cursor-pointer ${
-                isFavorite 
-                  ? 'bg-gradient-to-r from-[#DE4373] to-[#BF2C5B] text-white' 
-                  : 'bg-[#2A131A]/85 text-rose-200 hover:text-white border border-white/15'
-              }`}
-              title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-            >
-              <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-current' : ''}`} />
-            </button>
-
-            {/* User Added Delete Button */}
-            {photo.isUserAdded && onDeleteUserPhoto && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (confirm(`Delete this photo from your portfolio?`)) {
-                    onDeleteUserPhoto(photo.id);
-                  }
-                }}
-                className="p-2 rounded-full bg-red-900/80 hover:bg-red-600 text-white border border-red-700 transition-transform hover:scale-110 shadow cursor-pointer"
-                title="Delete this photo"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
+          {/* Curated Top Pick Badge */}
+          {isTopPick && (
+            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#361B24]/90 backdrop-blur-md border border-amber-400/40 text-amber-300 text-[10px] font-bold uppercase tracking-wider shadow">
+              <Star className="w-3 h-3 fill-amber-300 text-amber-300" />
+              <span>Top Pick</span>
+            </div>
+          )}
         </div>
 
         {/* Hover Center Inspect Action */}

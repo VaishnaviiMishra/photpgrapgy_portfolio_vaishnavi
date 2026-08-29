@@ -1,16 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import {
-  Sparkles,
+import { 
+  Camera, 
+  Sparkles, 
+  RotateCcw,
+  LayoutGrid,
+  Columns,
   Search,
-  PlusCircle,
-  Heart,
-  Cpu,
-  HeartHandshake,
-  Compass,
-  Music,
-  Camera,
-  Layers,
-  RotateCcw
+  X,
+  Star
 } from 'lucide-react';
 import { Photo, PhotoCategory } from '../types';
 import { PhotoCard } from './PhotoCard';
@@ -21,9 +18,13 @@ interface PortfolioSectionProps {
   onSelectCategory: (category: string) => void;
   onOpenLightbox: (photo: Photo) => void;
   favorites: Set<string>;
-  onToggleFavorite: (id: string) => void;
-  onDeleteUserPhoto: (id: string) => void;
   onResetToDefault: () => void;
+}
+
+interface CategoryOption {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
 }
 
 export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
@@ -32,70 +33,24 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   onSelectCategory,
   onOpenLightbox,
   favorites,
-  onToggleFavorite,
-  onDeleteUserPhoto,
   onResetToDefault,
 }) => {
+  const [viewColumns, setViewColumns] = useState<'2-col' | '3-col'>('3-col');
   const [searchQuery, setSearchQuery] = useState('');
-  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
-  const [viewColumns, setViewColumns] = useState<'3-col' | '2-col'>('3-col');
 
-  // Categories definitions
-  const CATEGORIES: { id: string; label: string; icon: React.ReactNode; badge: string; description: string }[] = [
-    {
-      id: 'top',
-      label: 'Top Photos',
-      icon: <Heart className="w-3.5 h-3.5 text-[#DE4373] fill-[#DE4373]" />,
-      badge: 'Curated Favorites',
-      description: 'Handpicked highlights and top favorite photographs curated across all sessions—heart any photo to add it to this collection.'
-    },
-    {
-      id: 'tech',
-      label: 'Tech Events',
-      icon: <Cpu className="w-3.5 h-3.5 text-[#DE4373]" />,
-      badge: 'Google Devs & Commutels',
-      description: 'Documenting developer conferences, Google Developers events, and Commutels hackathons—framing keynote moments, collaborative sprints, and speaker passion.'
-    },
-    {
-      id: 'fur-babies',
-      label: 'Fur Babies',
-      icon: <HeartHandshake className="w-3.5 h-3.5 text-[#DE4373]" />,
-      badge: 'Animal Portraiture',
-      description: 'Personal portrait sessions for companion animals. High-speed shutter mechanics freezing mid-air sprints with patient golden-hour framing.'
-    },
-    {
-      id: 'landscapes',
-      label: 'Landscapes',
-      icon: <Compass className="w-3.5 h-3.5 text-[#DE4373]" />,
-      badge: 'Natural Horizons',
-      description: 'Capturing natural vistas, scenic horizons, mountain perspectives, and landscape photography.'
-    },
-    {
-      id: 'concerts-fests',
-      label: 'Concerts & Stage',
-      icon: <Music className="w-3.5 h-3.5 text-[#DE4373]" />,
-      badge: 'Stage Lighting & Lasers',
-      description: 'Live performance and cultural fest atmosphere captured with fast prime optics and dynamic low-light color grading.'
-    },
-    {
-      id: 'portraits',
-      label: 'Portraits & Clicks',
-      icon: <Camera className="w-3.5 h-3.5 text-[#DE4373]" />,
-      badge: 'Creative Expressions',
-      description: 'Individual editorial portraits with natural prism lighting, graduation memories, and clean true-tone skin color mastering in Adobe Lightroom.'
-    },
-    {
-      id: 'fauna',
-      label: 'Fauna & Wildlife',
-      icon: <Sparkles className="w-3.5 h-3.5 text-[#DE4373]" />,
-      badge: 'Avian & Wildlife',
-      description: 'Candid wildlife frames and avian encounters in natural habitat with sharp focus and authentic detail.'
-    },
+  const CATEGORIES: CategoryOption[] = [
+    { id: 'top', label: 'Top Photos', icon: <Star className="w-3.5 h-3.5 text-amber-300" /> },
+    { id: 'all', label: 'All Photos', icon: <Sparkles className="w-3.5 h-3.5 text-[#DE4373]" /> },
+    { id: 'tech', label: 'Tech Events & Fests', icon: <Camera className="w-3.5 h-3.5 text-[#DE4373]" /> },
+    { id: 'landscapes', label: 'Landscapes', icon: <Camera className="w-3.5 h-3.5 text-[#DE4373]" /> },
+    { id: 'fauna', label: 'Fauna', icon: <Camera className="w-3.5 h-3.5 text-[#DE4373]" /> },
+    { id: 'concert', label: 'Concerts & Fests', icon: <Camera className="w-3.5 h-3.5 text-[#DE4373]" /> },
+    { id: 'fur-babies', label: 'Fur Babies', icon: <Camera className="w-3.5 h-3.5 text-[#DE4373]" /> },
+    { id: 'portraits', label: 'Portraits', icon: <Camera className="w-3.5 h-3.5 text-[#DE4373]" /> },
   ];
 
-  // Helper to match category IDs with alias tolerance
   const isCategoryMatch = (photoCategory: string, targetCategory: string) => {
-    if (targetCategory === 'top' || targetCategory === 'all') return true;
+    if (targetCategory === 'all') return true;
     if (photoCategory === targetCategory) return true;
     const normP = photoCategory.toLowerCase().replace(/[-_]/g, '');
     const normT = targetCategory.toLowerCase().replace(/[-_]/g, '');
@@ -106,24 +61,17 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
     return false;
   };
 
-  // Filter photos based on category, search, and favorites
+  // Filter photos based on category and search
   const filteredPhotos = useMemo(() => {
     return photos.filter((photo) => {
-      // Top Photos check: shows user-liked/favorited photos (or featured if no favorites yet)
-      if (activeCategory === 'top' || activeCategory === 'all') {
-        const isLiked = favorites.has(photo.id);
-        if (favorites.size > 0) {
-          if (!isLiked) return false;
-        } else {
-          if (!photo.isFeatured) return false;
-        }
-      } else if (!isCategoryMatch(photo.category, activeCategory)) {
+      // Top Photos check: curated top picks from creator
+      if (activeCategory === 'top') {
+        const isTop = favorites.has(photo.id) || photo.isFeatured;
+        if (!isTop) return false;
+      } else if (activeCategory !== 'all' && !isCategoryMatch(photo.category, activeCategory)) {
         return false;
       }
-      // Favorites filter toggle check
-      if (showOnlyFavorites && !favorites.has(photo.id)) {
-        return false;
-      }
+
       // Search query check
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
@@ -140,16 +88,15 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
       }
       return true;
     });
-  }, [photos, activeCategory, showOnlyFavorites, favorites, searchQuery]);
-
-  const currentCategoryObj = CATEGORIES.find((c) => c.id === activeCategory || isCategoryMatch(c.id, activeCategory)) || CATEGORIES[0];
+  }, [photos, activeCategory, favorites, searchQuery]);
 
   // Count per category
   const getCategoryCount = (catId: string) => {
-    if (catId === 'top' || catId === 'all') {
-      return favorites.size > 0
-        ? photos.filter((p) => favorites.has(p.id)).length
-        : photos.filter((p) => p.isFeatured).length;
+    if (catId === 'top') {
+      return photos.filter((p) => favorites.has(p.id) || p.isFeatured).length;
+    }
+    if (catId === 'all') {
+      return photos.length;
     }
     return photos.filter((p) => isCategoryMatch(p.category, catId)).length;
   };
@@ -168,23 +115,49 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               Selected Works & Categories
             </h2>
             <p className="text-rose-100/80 text-sm font-normal max-w-xl">
-              Filter through specialized series, inspect technical EXIF parameters, or add your custom pictures directly into the vault.
+              Filter through specialized series, inspect technical EXIF parameters, and explore curated photo stories.
             </p>
           </div>
 
-          {/* Quick Actions: Favorites (Pill style) */}
+          {/* Quick Actions: Search & Layout toggle */}
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
-              className={`px-5 py-3 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5 cursor-pointer shadow-md ${showOnlyFavorites
-                ? 'bg-gradient-to-r from-[#DE4373] to-[#BF2C5B] text-white border-transparent'
-                : 'bg-[#43232E] border-white/10 text-rose-100 hover:text-white hover:border-[#DE4373]/50'
-                }`}
-              title="Show only favorited photos"
-            >
-              <Heart className={`w-3.5 h-3.5 ${showOnlyFavorites ? 'fill-white text-white' : ''}`} />
-              <span>Favorites ({favorites.size})</span>
-            </button>
+            {/* Search Input */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search archive..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-48 sm:w-60 pl-8 pr-7 py-2 rounded-full bg-[#42222D] border border-white/10 text-xs text-white placeholder:text-rose-200/50 focus:outline-none focus:border-[#DE4373] transition-all"
+              />
+              <Search className="w-3.5 h-3.5 text-rose-300/60 absolute left-3 top-1/2 -translate-y-1/2" />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-rose-300 hover:text-white"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+
+            {/* Layout Switcher */}
+            <div className="hidden sm:flex items-center gap-1 p-1 rounded-full bg-[#42222D] border border-white/10">
+              <button
+                onClick={() => setViewColumns('2-col')}
+                className={`p-1.5 rounded-full transition-colors ${viewColumns === '2-col' ? 'bg-[#DE4373] text-white' : 'text-rose-200/70 hover:text-white'}`}
+                title="2 Columns Layout"
+              >
+                <Columns className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setViewColumns('3-col')}
+                className={`p-1.5 rounded-full transition-colors ${viewColumns === '3-col' ? 'bg-[#DE4373] text-white' : 'text-rose-200/70 hover:text-white'}`}
+                title="3 Columns Layout"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -205,15 +178,13 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               >
                 {cat.icon}
                 <span>{cat.label}</span>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${isSelected ? 'bg-black/40 text-white' : 'bg-black/20 text-rose-200'
-                  }`}>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${isSelected ? 'bg-black/40 text-white' : 'bg-black/20 text-rose-200'}`}>
                   {count}
                 </span>
               </button>
             );
           })}
         </div>
-
 
         {/* Gallery Grid */}
         {filteredPhotos.length > 0 ? (
@@ -227,8 +198,6 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                 photo={photo}
                 onOpenLightbox={onOpenLightbox}
                 isFavorite={favorites.has(photo.id)}
-                onToggleFavorite={onToggleFavorite}
-                onDeleteUserPhoto={onDeleteUserPhoto}
               />
             ))}
           </div>
@@ -250,7 +219,6 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               <button
                 onClick={() => {
                   setSearchQuery('');
-                  setShowOnlyFavorites(false);
                   onSelectCategory('top');
                 }}
                 className="px-5 py-2.5 rounded-full bg-[#4A2632] hover:bg-[#58303D] text-white text-xs font-semibold border border-white/10 cursor-pointer"
@@ -267,14 +235,14 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
             <span className="font-mono text-white font-bold">{filteredPhotos.length}</span>
             <span>Items Indexed</span>
             <span className="text-rose-300/40">•</span>
-            <span>Local Vault Active</span>
+            <span>Curated Showcase Active</span>
           </div>
 
           <div className="flex items-center gap-3">
             <button
               onClick={onResetToDefault}
               className="flex items-center gap-1.5 text-rose-200 hover:text-white transition-colors cursor-pointer"
-              title="Reset gallery to original portfolio shots"
+              title="Reset gallery to default showcase shots"
             >
               <RotateCcw className="w-3.5 h-3.5 text-[#DE4373]" />
               <span>Reset Archive</span>
