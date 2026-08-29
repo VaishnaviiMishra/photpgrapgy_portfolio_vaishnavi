@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Photo, PhotoCategory } from './types';
+import { Photo } from './types';
 import { INITIAL_PHOTOS } from './data/initialPhotos';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -11,8 +11,7 @@ import { Footer } from './components/Footer';
 import { LightboxModal } from './components/LightboxModal';
 import { AddPhotoPage } from './components/AddPhotoPage';
 
-const STORAGE_KEY = 'vaishnavi_portfolio_photos_v11';
-const FAVORITES_KEY = 'vaishnavi_portfolio_favorites_v11';
+const STORAGE_KEY = 'vaishnavi_portfolio_photos_v12';
 
 export default function App() {
   // Routing state ('/' or '/addphoto')
@@ -82,23 +81,8 @@ export default function App() {
     return INITIAL_PHOTOS;
   });
 
-  // Top Picks (favorites) state
-  const [favorites, setFavorites] = useState<Set<string>>(() => {
-    try {
-      const saved = localStorage.getItem(FAVORITES_KEY);
-      if (saved) {
-        return new Set(JSON.parse(saved));
-      }
-    } catch {
-      // ignore
-    }
-    const initialFavs = new Set<string>();
-    INITIAL_PHOTOS.filter((p) => p.isFeatured).forEach((p) => initialFavs.add(p.id));
-    return initialFavs;
-  });
-
-  // Active category filter state (defaults to 'top')
-  const [activeCategory, setActiveCategory] = useState<string>('top');
+  // Active category filter state (defaults to 'tech')
+  const [activeCategory, setActiveCategory] = useState<string>('tech');
   
   // Lightbox Modal state
   const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null);
@@ -106,7 +90,7 @@ export default function App() {
   // Contact prefilled service
   const [contactPrefilledService, setContactPrefilledService] = useState<string>('');
 
-  // 1. Fetch serverless database photos and top picks on mount and route switch
+  // 1. Fetch serverless database photos on mount and route switch
   const loadServerData = async () => {
     try {
       const res = await fetch('/api/photos', { cache: 'no-store' });
@@ -121,11 +105,6 @@ export default function App() {
             const merged = [...data.customPhotos, ...baseList];
             return merged;
           });
-        }
-
-        // Merge top picks
-        if (Array.isArray(data.topPicks) && data.topPicks.length > 0) {
-          setFavorites(new Set(data.topPicks));
         }
       }
     } catch (err) {
@@ -146,15 +125,6 @@ export default function App() {
     }
   }, [photos]);
 
-  // Persist favorites to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem(FAVORITES_KEY, JSON.stringify(Array.from(favorites)));
-    } catch (e) {
-      console.error('Failed to persist favorites', e);
-    }
-  }, [favorites]);
-
   // Add new photo handler
   const handleAddPhoto = async (newPhoto: Photo) => {
     setPhotos((prev) => [newPhoto, ...prev.filter(p => p.id !== newPhoto.id)]);
@@ -174,11 +144,6 @@ export default function App() {
   // Delete user added photo handler
   const handleDeleteUserPhoto = async (id: string) => {
     setPhotos((prev) => prev.filter((p) => p.id !== id));
-    setFavorites((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
     if (lightboxPhoto?.id === id) {
       setLightboxPhoto(null);
     }
@@ -192,52 +157,11 @@ export default function App() {
     }
   };
 
-  // Toggle Top Pick (Creator only from /addphoto)
-  const handleToggleTopPick = async (id: string) => {
-    let isNowFeatured = false;
-
-    setFavorites((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-        isNowFeatured = false;
-      } else {
-        next.add(id);
-        isNowFeatured = true;
-      }
-      return next;
-    });
-
-    setPhotos((prev) =>
-      prev.map((p) => {
-        if (p.id === id) {
-          return { ...p, isFeatured: isNowFeatured };
-        }
-        return p;
-      })
-    );
-
-    // Sync with database API
-    try {
-      await fetch('/api/photos', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ photoId: id, isFeatured: isNowFeatured }),
-      });
-    } catch (err) {
-      console.warn('Failed to update Top Pick status in database:', err);
-    }
-  };
-
   // Reset to default curated photos
   const handleResetToDefault = () => {
     if (window.confirm('Reset gallery back to default showcase shots?')) {
       setPhotos(INITIAL_PHOTOS);
-      const initialFavs = new Set<string>();
-      INITIAL_PHOTOS.filter((p) => p.isFeatured).forEach((p) => initialFavs.add(p.id));
-      setFavorites(initialFavs);
       localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(FAVORITES_KEY);
     }
   };
 
@@ -269,8 +193,6 @@ export default function App() {
         onAddPhoto={handleAddPhoto}
         photos={photos}
         onDeleteUserPhoto={handleDeleteUserPhoto}
-        favorites={favorites}
-        onToggleTopPick={handleToggleTopPick}
       />
     );
   }
@@ -295,13 +217,12 @@ export default function App() {
         {/* The Photographer Biography & Journey */}
         <AboutSection />
 
-        {/* Portfolio Gallery Showcase with Curated Top Picks */}
+        {/* Portfolio Gallery Showcase with Direct Category Tabs */}
         <PortfolioSection
           photos={photos}
           activeCategory={activeCategory}
           onSelectCategory={setActiveCategory}
           onOpenLightbox={(photo) => setLightboxPhoto(photo)}
-          favorites={favorites}
           onResetToDefault={handleResetToDefault}
         />
 
@@ -323,15 +244,13 @@ export default function App() {
       <LightboxModal
         photo={lightboxPhoto}
         photosList={photos.filter((p) => {
-          if (activeCategory === 'top') {
-            return favorites.has(p.id);
-          }
-          if (activeCategory === 'all') return true;
-          return p.category === activeCategory;
+          if (p.category === activeCategory) return true;
+          const normP = p.category.toLowerCase().replace(/[-_]/g, '');
+          const normA = activeCategory.toLowerCase().replace(/[-_]/g, '');
+          return normP === normA;
         })}
         onClose={() => setLightboxPhoto(null)}
         onSelectPhoto={(photo) => setLightboxPhoto(photo)}
-        isFavorite={lightboxPhoto ? favorites.has(lightboxPhoto.id) : false}
       />
 
     </div>

@@ -2,25 +2,14 @@ import React, { useState, useRef } from 'react';
 import {
   ArrowLeft,
   Upload,
-  Camera,
-  Image as ImageIcon,
   Link as LinkIcon,
-  Sliders,
   Check,
   Plus,
-  Sparkles,
   AlertCircle,
   Loader2,
   CloudUpload,
   Trash2,
-  Eye,
   Lock,
-  Layers,
-  MapPin,
-  Calendar,
-  Star,
-  Search,
-  Filter
 } from 'lucide-react';
 import { Photo, PhotoCategory } from '../types';
 
@@ -32,8 +21,6 @@ interface AddPhotoPageProps {
   onAddPhoto: (photo: Photo) => void;
   photos: Photo[];
   onDeleteUserPhoto: (photoId: string) => void;
-  favorites: Set<string>;
-  onToggleTopPick: (photoId: string) => void;
 }
 
 export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
@@ -41,8 +28,6 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
   onAddPhoto,
   photos,
   onDeleteUserPhoto,
-  favorites,
-  onToggleTopPick,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -52,34 +37,25 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
   const [imageUrl, setImageUrl] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
   const [location, setLocation] = useState('');
   const [eventOrClient, setEventOrClient] = useState('');
   const [year, setYear] = useState(new Date().getFullYear().toString());
-  const [lens, setLens] = useState('');
-  const [settings, setSettings] = useState('');
-  const [lightroomPreset, setLightroomPreset] = useState('');
   const [tagsInput, setTagsInput] = useState('');
   const [inputMode, setInputMode] = useState<'upload' | 'url'>('upload');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [publishedSuccessMsg, setPublishedSuccessMsg] = useState<string | null>(null);
 
-  // Gallery management filters
-  const [manageCategoryFilter, setManageCategoryFilter] = useState<string>('all');
-  const [manageSearchQuery, setManageSearchQuery] = useState('');
-
   const CATEGORY_OPTIONS: { value: PhotoCategory; label: string; helper: string }[] = [
-    { value: 'tech', label: 'Tech Events', helper: 'Google Devs, Hackathons, Keynotes' },
-    { value: 'fur-babies', label: 'Fur Babies', helper: 'Dog Portraits & Companion Pet Shoots' },
+    { value: 'tech', label: 'Tech Events & Fests', helper: 'Google Devs, Hackathons, Keynotes' },
     { value: 'landscapes', label: 'Landscapes', helper: 'Vistas, Horizons, Skies & Nature' },
-    { value: 'concerts-fests', label: 'Concerts & Stage', helper: 'Live Stages, Lighting & Energy' },
-    { value: 'portraits', label: 'Portraits & Clicks', helper: 'Individual Portraits & Creative Expressions' },
     { value: 'fauna', label: 'Fauna & Wildlife', helper: 'Birds, Avian Encounters & Nature Wildlife' },
+    { value: 'concerts-fests', label: 'Concerts & Fests', helper: 'Live Stages, Lighting & Energy' },
+    { value: 'fur-babies', label: 'Fur Babies', helper: 'Dog Portraits & Companion Pet Shoots' },
+    { value: 'portraits', label: 'Portraits', helper: 'Individual Portraits & Creative Expressions' },
   ];
 
   const uploadToCloudinary = async (file: File) => {
     setIsUploading(true);
-    setUploadSuccess(false);
     setErrorMsg(null);
 
     const localPreviewUrl = URL.createObjectURL(file);
@@ -107,7 +83,6 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
 
       setImageUrl(data.secure_url);
       setImagePreview(data.secure_url);
-      setUploadSuccess(true);
     } catch (err: any) {
       console.error('Cloudinary Upload Error:', err);
       setErrorMsg(err.message || 'Error uploading file to Cloudinary. Please try again or use direct URL.');
@@ -164,14 +139,14 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
       description: description.trim() || `Shot by Vaishnavi Mishra (${categoryObj?.label || 'Portfolio'}).`,
       imageUrl: finalImage,
       category,
-      categoryLabel: categoryObj?.label || 'Custom Portfolio',
+      categoryLabel: categoryObj?.label || 'Portfolio',
       location: location.trim() || undefined,
       eventOrClient: eventOrClient.trim() || undefined,
       year: year.trim() || new Date().getFullYear().toString(),
       cameraInfo: {
-        lens: lens.trim() || undefined,
-        settings: settings.trim() || undefined,
-        lightroomPreset: lightroomPreset.trim() || 'Custom Lightroom Profile',
+        lens: 'Canon RF System',
+        settings: 'Curated Exposure',
+        lightroomPreset: 'Custom Lightroom Profile',
       },
       tags: tags.length > 0 ? tags : [category, 'photography'],
       isFeatured: true,
@@ -197,41 +172,17 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
     setDescription('');
     setImageUrl('');
     setImagePreview(null);
-    setUploadSuccess(false);
     setLocation('');
     setEventOrClient('');
-    setLens('');
-    setSettings('');
     setTagsInput('');
-    setPublishedSuccessMsg(`"${newPhoto.title}" has been successfully published to your portfolio & database!`);
+    setPublishedSuccessMsg(`"${newPhoto.title}" has been successfully published to your portfolio!`);
 
-    // Auto-clear success message after 5 seconds
     setTimeout(() => {
       setPublishedSuccessMsg(null);
     }, 5000);
   };
 
-  // Filter photos for the management section
-  const managedPhotos = photos.filter((p) => {
-    if (manageCategoryFilter === 'top') {
-      if (!favorites.has(p.id)) return false;
-    } else if (manageCategoryFilter === 'custom') {
-      if (!p.isUserAdded) return false;
-    } else if (manageCategoryFilter !== 'all') {
-      if (p.category !== manageCategoryFilter) return false;
-    }
-
-    if (manageSearchQuery.trim()) {
-      const q = manageSearchQuery.toLowerCase();
-      return (
-        p.title?.toLowerCase().includes(q) ||
-        p.category?.toLowerCase().includes(q) ||
-        p.categoryLabel?.toLowerCase().includes(q) ||
-        p.location?.toLowerCase().includes(q)
-      );
-    }
-    return true;
-  });
+  const userPhotos = photos.filter((p) => p.isUserAdded);
 
   return (
     <div className="min-h-screen bg-[#2E141D] text-white flex flex-col">
@@ -248,7 +199,7 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
             </button>
             <div className="hidden sm:block">
               <span className="text-sm font-bold text-white block">Creator Studio</span>
-              <span className="text-[11px] text-rose-200/70">Ingest Cloudinary Photos & Manage Top Picks</span>
+              <span className="text-[11px] text-rose-200/70">Upload & Publish to Cloudinary</span>
             </div>
           </div>
 
@@ -268,13 +219,13 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4A2632] border border-white/10 text-[#DE4373] text-xs font-semibold uppercase tracking-wider">
             <Lock className="w-3.5 h-3.5" />
-            <span>Private Ingest & Curation Endpoint (/addphoto)</span>
+            <span>Private Ingest Endpoint (/addphoto)</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
-            Publish New Photography & Curate Top Picks
+            Publish New Photography
           </h1>
           <p className="text-rose-100/80 text-sm max-w-3xl leading-relaxed">
-            Upload high-resolution shots to Cloudinary and persist them permanently in your global portfolio. Manage which photos are featured in <strong>Top Photos</strong>.
+            Upload high-resolution shots to Cloudinary and persist them permanently in your global portfolio.
           </p>
         </div>
 
@@ -289,7 +240,7 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
             </div>
             <button
               onClick={onBack}
-              className="px-4 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors"
+              className="px-4 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors cursor-pointer"
             >
               View in Portfolio
             </button>
@@ -350,7 +301,7 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
                   <button
                     type="button"
                     onClick={() => setInputMode('upload')}
-                    className={`px-3 py-1 rounded-lg font-medium transition-all ${
+                    className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
                       inputMode === 'upload' ? 'bg-[#DE4373] text-white shadow' : 'text-rose-200/60 hover:text-white'
                     }`}
                   >
@@ -359,7 +310,7 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
                   <button
                     type="button"
                     onClick={() => setInputMode('url')}
-                    className={`px-3 py-1 rounded-lg font-medium transition-all ${
+                    className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
                       inputMode === 'url' ? 'bg-[#DE4373] text-white shadow' : 'text-rose-200/60 hover:text-white'
                     }`}
                   >
@@ -398,7 +349,7 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
                         Uploading directly to Cloudinary...
                       </p>
                       <p className="text-xs text-rose-300/70">
-                        Generating high-speed CDN URL and responsive formats
+                        Generating CDN URL and responsive formats
                       </p>
                     </div>
                   ) : imagePreview ? (
@@ -560,120 +511,47 @@ export const AddPhotoPage: React.FC<AddPhotoPageProps> = ({
           </form>
         </div>
 
-        {/* Step 4: Gallery Manager & Top Picks Curation Vault */}
-        <div className="space-y-6 pt-4 border-t border-white/10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
-                <span>Gallery & Top Picks Manager ({photos.length})</span>
-              </h2>
-              <p className="text-xs text-rose-200/70">
-                Click the Star (⭐) on any photo to feature or unfeature it in your public <strong>Top Photos</strong>.
-              </p>
+        {/* Recently Ingested User Photos Vault */}
+        {userPhotos.length > 0 && (
+          <div className="space-y-4 pt-4 border-t border-white/10">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-white">Your Custom Uploaded Pictures ({userPhotos.length})</h3>
+                <p className="text-xs text-rose-200/70">Custom photos saved permanently to your global portfolio</p>
+              </div>
             </div>
 
-            {/* Management Filter Pills */}
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-              <button
-                onClick={() => setManageCategoryFilter('all')}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors cursor-pointer ${
-                  manageCategoryFilter === 'all'
-                    ? 'bg-[#DE4373] text-white'
-                    : 'bg-[#351C24] text-rose-200/70 hover:text-white border border-white/10'
-                }`}
-              >
-                All ({photos.length})
-              </button>
-              <button
-                onClick={() => setManageCategoryFilter('top')}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
-                  manageCategoryFilter === 'top'
-                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold'
-                    : 'bg-[#351C24] text-amber-300 hover:text-white border border-amber-400/30'
-                }`}
-              >
-                <Star className="w-3 h-3 fill-current" />
-                <span>Top Picks ({photos.filter(p => favorites.has(p.id)).length})</span>
-              </button>
-              <button
-                onClick={() => setManageCategoryFilter('custom')}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
-                  manageCategoryFilter === 'custom'
-                    ? 'bg-[#DE4373] text-white'
-                    : 'bg-[#351C24] text-rose-200/70 hover:text-white border border-white/10'
-                }`}
-              >
-                <Sparkles className="w-3 h-3 text-[#DE4373]" />
-                <span>Custom Uploads ({photos.filter(p => p.isUserAdded).length})</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Photo Management Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {managedPhotos.map((photo) => {
-              const isTopPick = favorites.has(photo.id);
-              return (
-                <div
-                  key={photo.id}
-                  className={`p-4 rounded-2xl bg-[#351C24] border transition-all space-y-3 group ${
-                    isTopPick ? 'border-amber-400/40 shadow-lg shadow-amber-950/20' : 'border-white/10'
-                  }`}
-                >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {userPhotos.map((photo) => (
+                <div key={photo.id} className="p-4 rounded-2xl bg-[#351C24] border border-white/10 space-y-3 group">
                   <div className="aspect-[4/3] rounded-xl overflow-hidden bg-[#2C131C] relative">
                     <img src={photo.imageUrl} alt={photo.title} className="w-full h-full object-cover" />
                     <span className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-black/70 text-[10px] text-white font-medium">
                       {photo.categoryLabel || photo.category}
                     </span>
-                    {photo.isUserAdded && (
-                      <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-[#DE4373] text-[9px] font-bold text-white uppercase tracking-wider">
-                        Cloudinary
-                      </span>
-                    )}
                   </div>
-
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="min-w-0">
-                      <h4 className="text-xs font-bold text-white truncate">{photo.title}</h4>
-                      <p className="text-[10px] text-rose-200/60">{photo.location || photo.year || 'Curated'}</p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-xs font-bold text-white truncate max-w-[180px]">{photo.title}</h4>
+                      <p className="text-[10px] text-rose-200/60">{photo.location || photo.year}</p>
                     </div>
-
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {/* Top Pick Star Button */}
-                      <button
-                        onClick={() => onToggleTopPick(photo.id)}
-                        className={`p-2 rounded-full border transition-all cursor-pointer ${
-                          isTopPick
-                            ? 'bg-amber-500 text-white border-amber-400 shadow-md shadow-amber-900/40'
-                            : 'bg-[#46222F] text-rose-300/60 hover:text-amber-300 border-white/10'
-                        }`}
-                        title={isTopPick ? 'Remove from Top Picks' : 'Mark as Top Pick'}
-                      >
-                        <Star className={`w-3.5 h-3.5 ${isTopPick ? 'fill-white' : ''}`} />
-                      </button>
-
-                      {/* Delete button (for custom user-added photos) */}
-                      {photo.isUserAdded && (
-                        <button
-                          onClick={() => {
-                            if (confirm(`Delete "${photo.title}" from portfolio & database?`)) {
-                              onDeleteUserPhoto(photo.id);
-                            }
-                          }}
-                          className="p-2 rounded-full bg-[#46222F] hover:bg-red-600 text-rose-200 hover:text-white transition-colors cursor-pointer border border-white/10"
-                          title="Delete custom photo"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                    </div>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Delete "${photo.title}"?`)) {
+                          onDeleteUserPhoto(photo.id);
+                        }
+                      }}
+                      className="p-2 rounded-full bg-[#46222F] hover:bg-red-600 text-rose-200 hover:text-white transition-colors cursor-pointer border border-white/10"
+                      title="Delete custom photo"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
       </main>
     </div>

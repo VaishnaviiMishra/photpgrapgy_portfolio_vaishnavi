@@ -1,9 +1,5 @@
 import React from 'react';
-import { 
-  Maximize2, 
-  Sparkles,
-  Star
-} from 'lucide-react';
+import { Maximize2 } from 'lucide-react';
 import { Photo } from '../types';
 
 interface PhotoCardProps {
@@ -15,7 +11,6 @@ interface PhotoCardProps {
 export const PhotoCard: React.FC<PhotoCardProps> = ({
   photo,
   onOpenLightbox,
-  isFavorite = false,
 }) => {
   return (
     <div 
@@ -35,29 +30,11 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
         {/* Subtle Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#261218]/90 via-[#261218]/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
 
-        {/* Top Badges */}
-        <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#2A131A]/90 backdrop-blur-md border border-[#DE4373]/60 text-white shadow">
-              {photo.categoryLabel || photo.category}
-            </span>
-            {photo.isUserAdded && (
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gradient-to-r from-[#DE4373] to-[#BF2C5B] text-white flex items-center gap-1 shadow">
-                <Sparkles className="w-2.5 h-2.5" />
-                Custom
-              </span>
-            )}
-          </div>
-
-          {/* Minimal Curated Star Badge */}
-          {isFavorite && (
-            <div 
-              className="p-1.5 rounded-full bg-[#2A131A]/90 backdrop-blur-md border border-amber-400/50 text-amber-300 shadow flex items-center justify-center"
-              title="Top Pick"
-            >
-              <Star className="w-3.5 h-3.5 fill-amber-300 text-amber-300" />
-            </div>
-          )}
+        {/* Top Category Badge */}
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 z-10">
+          <span className="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#2A131A]/90 backdrop-blur-md border border-[#DE4373]/60 text-white shadow">
+            {photo.categoryLabel || photo.category}
+          </span>
         </div>
 
         {/* Hover Center Inspect Action */}
@@ -71,7 +48,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
         {/* Bottom Category Title */}
         <div className="absolute bottom-3 left-3.5 right-3.5 text-white z-10">
           <h3 className="font-semibold text-base leading-tight drop-shadow group-hover:text-rose-200 transition-colors">
-            {photo.categoryLabel || photo.category}
+            {photo.title || photo.categoryLabel || photo.category}
           </h3>
         </div>
       </div>
