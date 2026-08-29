@@ -26,9 +26,10 @@ export default async function handler(req: any, res: any) {
       return res.status(400).json({ error: 'Name and either Email or Phone are required.' });
     }
 
-    const emailUser = process.env.EMAIL_USER || process.env.VITE_EMAIL_USER || 'vaishnavisudha111@gmail.com';
-    const emailPass = process.env.EMAIL_PASS || process.env.VITE_EMAIL_PASS;
-    const recipientEmail = process.env.EMAIL_TO || process.env.VITE_EMAIL_TO || 'vaishnavisudha111@gmail.com';
+    const emailUser = (process.env.EMAIL_USER || process.env.VITE_EMAIL_USER || 'vaishnavisudha111@gmail.com').trim();
+    const rawPass = process.env.EMAIL_PASS || process.env.VITE_EMAIL_PASS || '';
+    const emailPass = rawPass.replace(/\s+/g, '');
+    const recipientEmail = (process.env.EMAIL_TO || process.env.VITE_EMAIL_TO || 'vaishnavisudha111@gmail.com').trim();
 
     if (!emailPass) {
       console.warn('EMAIL_PASS not configured in environment variables.');
