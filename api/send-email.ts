@@ -26,13 +26,31 @@ export default async function handler(req: any, res: any) {
       return res.status(400).json({ error: 'Name and either Email or Phone are required.' });
     }
 
-    const emailUser = (process.env.EMAIL_USER || process.env.VITE_EMAIL_USER || 'vaishnavisudha111@gmail.com').trim();
-    const rawPass = process.env.EMAIL_PASS || process.env.VITE_EMAIL_PASS || '';
+    const emailUser = (
+      process.env.EMAIL_USER ||
+      process.env.EMAIL_USERNAME ||
+      process.env.VITE_EMAIL_USER ||
+      'vaishnavisudha111@gmail.com'
+    ).trim();
+
+    // Check all possible variable aliases that user might enter on Vercel
+    const rawPass =
+      process.env.EMAIL_PASS ||
+      process.env.EMAIL_PASSWORD ||
+      process.env.CEMAIL_PASSWORD ||
+      process.env.VITE_EMAIL_PASS ||
+      process.env.VITE_EMAIL_PASSWORD ||
+      '';
+
     const emailPass = rawPass.replace(/\s+/g, '');
-    const recipientEmail = (process.env.EMAIL_TO || process.env.VITE_EMAIL_TO || 'vaishnavisudha111@gmail.com').trim();
+    const recipientEmail = (
+      process.env.EMAIL_TO ||
+      process.env.VITE_EMAIL_TO ||
+      'vaishnavisudha111@gmail.com'
+    ).trim();
 
     if (!emailPass) {
-      console.warn('EMAIL_PASS not configured in environment variables.');
+      console.warn('EMAIL_PASS / EMAIL_PASSWORD not configured in environment variables.');
       return res.status(500).json({ 
         error: 'Email service is not configured with an App Password yet. Please set EMAIL_PASS in Vercel environment variables or contact directly via WhatsApp.' 
       });

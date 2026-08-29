@@ -147,6 +147,11 @@ async function saveStoredData(data: DatabasePayload): Promise<boolean> {
 }
 
 export default async function handler(req: any, res: any) {
+  // Disable caching so clients ALWAYS receive the freshest custom photos
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+
   // CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');

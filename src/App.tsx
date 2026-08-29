@@ -106,36 +106,36 @@ export default function App() {
   // Contact prefilled service
   const [contactPrefilledService, setContactPrefilledService] = useState<string>('');
 
-  // 1. Fetch serverless database photos and top picks on mount
-  useEffect(() => {
-    async function loadServerData() {
-      try {
-        const res = await fetch('/api/photos');
-        if (res.ok) {
-          const data = await res.json();
-          
-          // Merge custom photos from database
-          if (Array.isArray(data.customPhotos)) {
-            const customMap = new Map(data.customPhotos.map((p: Photo) => [p.id, p]));
-            setPhotos((prev) => {
-              const baseList = INITIAL_PHOTOS.filter((p) => !customMap.has(p.id));
-              const merged = [...data.customPhotos, ...baseList];
-              return merged;
-            });
-          }
-
-          // Merge top picks
-          if (Array.isArray(data.topPicks) && data.topPicks.length > 0) {
-            setFavorites(new Set(data.topPicks));
-          }
+  // 1. Fetch serverless database photos and top picks on mount and route switch
+  const loadServerData = async () => {
+    try {
+      const res = await fetch('/api/photos', { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        
+        // Merge custom photos from database at the beginning
+        if (Array.isArray(data.customPhotos)) {
+          const customMap = new Map(data.customPhotos.map((p: Photo) => [p.id, p]));
+          setPhotos((prev) => {
+            const baseList = INITIAL_PHOTOS.filter((p) => !customMap.has(p.id));
+            const merged = [...data.customPhotos, ...baseList];
+            return merged;
+          });
         }
-      } catch (err) {
-        console.warn('Could not load photos from database API:', err);
-      }
-    }
 
+        // Merge top picks
+        if (Array.isArray(data.topPicks) && data.topPicks.length > 0) {
+          setFavorites(new Set(data.topPicks));
+        }
+      }
+    } catch (err) {
+      console.warn('Could not load photos from database API:', err);
+    }
+  };
+
+  useEffect(() => {
     loadServerData();
-  }, []);
+  }, [currentPath]);
 
   // Persist photos to localStorage
   useEffect(() => {
