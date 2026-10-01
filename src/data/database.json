@@ -1,4 +1,128 @@
 {
-  "customPhotos": [],
-  "topPicks": []
+  "customPhotos": [
+    {
+      "id": "user-photo-1790881599241-9hj8",
+      "imageUrl": "https://res.cloudinary.com/dcilsfof2/image/upload/v1790881593/IMG_5478_lagoia.jpg",
+      "category": "portraits",
+      "categoryLabel": "Portraits",
+      "title": "Couple shoot",
+      "description": "Shot by Vaishnavi Mishra (Portraits).",
+      "location": "",
+      "eventOrClient": "",
+      "year": "2026",
+      "cameraInfo": {
+        "lens": "Canon RF System",
+        "settings": "Curated Exposure",
+        "lightroomPreset": "Custom Lightroom Profile"
+      },
+      "isFeatured": true,
+      "isUserAdded": true,
+      "tags": [
+        "portraits",
+        "photography"
+      ],
+      "dateAdded": "2026-10-01T19:06:39.534Z"
+    },
+    {
+      "id": "user-photo-1790881566126-on0f",
+      "imageUrl": "https://res.cloudinary.com/dcilsfof2/image/upload/v1790881554/IMG_4692_t2tv6s.jpg",
+      "category": "portraits",
+      "categoryLabel": "Portraits",
+      "title": "Brand Shoot",
+      "description": "Shot by Vaishnavi Mishra (Portraits).",
+      "location": "",
+      "eventOrClient": "",
+      "year": "2026",
+      "cameraInfo": {
+        "lens": "Canon RF System",
+        "settings": "Curated Exposure",
+        "lightroomPreset": "Custom Lightroom Profile"
+      },
+      "isFeatured": true,
+      "isUserAdded": true,
+      "tags": [
+        "portraits",
+        "photography"
+      ],
+      "dateAdded": "2026-10-01T19:06:06.441Z"
+    },
+    {
+      "id": "user-photo-1789820591157-ypch",
+      "imageUrl": "https://res.cloudinary.com/dcilsfof2/image/upload/v1789820583/139578_hsi5cq.jpg",
+      "category": "fur-babies",
+      "categoryLabel": "Fur Babies",
+      "title": "Dog",
+      "description": "Shot by Vaishnavi Mishra (Fur Babies).",
+      "location": "",
+      "eventOrClient": "",
+      "year": "2026",
+      "cameraInfo": {
+        "lens": "Canon RF System",
+        "settings": "Curated Exposure",
+        "lightroomPreset": "Custom Lightroom Profile"
+      },
+      "isFeatured": true,
+      "isUserAdded": true,
+      "tags": [
+        "fur-babies",
+        "photography"
+      ],
+      "dateAdded": "2026-09-19T12:23:11.445Z"
+    },
+    {
+      "id": "user-photo-1789820511261-t61r",
+      "imageUrl": "https://res.cloudinary.com/dcilsfof2/image/upload/v1789820495/139582_zgjqv1.jpg",
+      "category": "fur-babies",
+      "categoryLabel": "Fur Babies",
+      "title": "Monkey",
+      "description": "Shot by Vaishnavi Mishra (Fur Babies).",
+      "location": "",
+      "eventOrClient": "",
+      "year": "2026",
+      "cameraInfo": {
+        "lens": "Canon RF System",
+        "settings": "Curated Exposure",
+        "lightroomPreset": "Custom Lightroom Profile"
+      },
+      "isFeatured": true,
+      "isUserAdded": true,
+      "tags": [
+        "fur-babies",
+        "photography"
+      ],
+      "dateAdded": "2026-09-19T12:21:51.557Z"
+    },
+    {
+      "id": "user-photo-1788010264168-9r76",
+      "imageUrl": "https://res.cloudinary.com/dcilsfof2/image/upload/v1788010137/IMG_0956.jpg_sa2i7a.jpg",
+      "category": "fur-babies",
+      "categoryLabel": "Fur Babies",
+      "title": "Cat",
+      "description": "Shot by Vaishnavi Mishra (Fur Babies).",
+      "location": "",
+      "eventOrClient": "",
+      "year": "2026",
+      "cameraInfo": {
+        "lens": "Canon RF System",
+        "settings": "Curated Exposure",
+        "lightroomPreset": "Custom Lightroom Profile"
+      },
+      "isFeatured": true,
+      "isUserAdded": true,
+      "tags": [
+        "fur-babies",
+        "photography"
+      ],
+      "dateAdded": "2026-08-29T13:31:04.409Z"
+    }
+  ],
+  "topPicks": [
+    "user-photo-1790881599241-9hj8",
+    "user-photo-1790881566126-on0f",
+    "user-photo-1789820591157-ypch",
+    "user-photo-1789820511261-t61r",
+    "user-photo-1788010264168-9r76",
+    "tech-2",
+    "furbaby-5"
+  ]
 }

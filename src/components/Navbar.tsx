@@ -77,11 +77,11 @@ export const Navbar: React.FC<NavbarProps> = ({
               About
             </button>
             <button
-              onClick={() => scrollToSection('services')}
+              onClick={() => scrollToSection('work')}
               className="hover:text-white transition-colors cursor-pointer py-1"
-              id="nav-services-btn"
+              id="nav-work-btn"
             >
-              Service
+              Work
             </button>
             <button
               onClick={() => scrollToSection('portfolio')}

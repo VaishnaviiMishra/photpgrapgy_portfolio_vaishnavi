@@ -1,19 +1,17 @@
+
 import React from 'react';
 import {
-  Heart,
   Laptop,
   Calendar,
-  Sliders,
   ExternalLink,
   Instagram,
   Linkedin,
-  MapPin,
-  Cpu,
   Sparkles,
   Camera,
   Smile,
   Video,
-  Aperture
+  Aperture,
+  Heart,
 } from 'lucide-react';
 import { GEAR_DATA } from '../data/services';
 import vaishnaviImage from '../../assets/vaishnavi.jpg';
@@ -38,9 +36,11 @@ export const AboutSection: React.FC = () => {
   };
 
   return (
-    <section id="about" className="py-20 bg-[#381F26] border-b border-white/10 relative overflow-hidden">
-
-      {/* Aceternity Grid & Dot Backgrounds */}
+    <section
+      id="about"
+      className="py-20 bg-[#381F26] border-b border-white/10 relative overflow-hidden"
+    >
+      {/* Background */}
       <div
         className={cn(
           "absolute inset-0 pointer-events-none",
@@ -49,19 +49,17 @@ export const AboutSection: React.FC = () => {
         )}
       />
 
-      {/* Radial vignette gradient for container to give a faded, luxurious look */}
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#381F26] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
 
-      {/* Ambient decorative glowing colored orbs */}
       <div className="absolute top-1/4 -left-20 w-80 h-80 rounded-full bg-[#DE4373]/10 blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 -right-20 w-96 h-96 rounded-full bg-[#BF2C5B]/10 blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-        {/* Story Grid: Editorial Frame on Left & Seamless Bio Narrative on Right */}
+        {/* Main Story */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start mb-16">
 
-          {/* Left Column: Visual Avatar / Editorial Frame with Aceternity 3D Card */}
+          {/* Photo */}
           <div className="lg:col-span-5 relative lg:sticky lg:top-28">
             <CardContainer className="relative mx-auto max-w-md w-full">
               <CardBody className="relative w-full">
@@ -74,6 +72,7 @@ export const AboutSection: React.FC = () => {
                     alt="Vaishnavi Mishra"
                     className="w-full h-[480px] object-cover object-top opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                   />
+
                   <div className="absolute inset-0 bg-gradient-to-t from-[#261218] via-transparent to-transparent opacity-90" />
 
                   <CardItem
@@ -82,11 +81,15 @@ export const AboutSection: React.FC = () => {
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="text-white font-bold text-base">Vaishnavi Mishra</h4>
+                        <h4 className="text-white font-bold text-base">
+                          Vaishnavi Mishra
+                        </h4>
+
                         <p className="text-rose-200 text-xs mt-0.5 font-medium">
-                          Photographer & Visual Storyteller
+                          Photographer & Software Developer
                         </p>
                       </div>
+
                       <div className="flex items-center gap-2">
                         <a
                           href="https://www.instagram.com/vaishnaviii_ii/"
@@ -97,6 +100,7 @@ export const AboutSection: React.FC = () => {
                         >
                           <Instagram className="w-4 h-4" />
                         </a>
+
                         <a
                           href="https://www.linkedin.com/in/vaishnavi-mishra-b17ba6256"
                           target="_blank"
@@ -111,7 +115,6 @@ export const AboutSection: React.FC = () => {
                   </CardItem>
                 </CardItem>
 
-                {/* Milestone Tag floating in 3D */}
                 <CardItem
                   translateZ="100"
                   className="absolute -top-3 -left-3 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#DE4373] to-[#BF2C5B] text-white text-xs font-bold shadow-lg flex items-center gap-2"
@@ -123,41 +126,54 @@ export const AboutSection: React.FC = () => {
             </CardContainer>
           </div>
 
-          {/* Right Column: Unified Journey, Bio, Capabilities & Direct Links */}
+          {/* Story */}
           <div className="lg:col-span-7 space-y-6">
 
-            {/* Seamless Section Header directly integrated into Narrative */}
             <div className="space-y-3">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#4A2632] border border-white/10 text-[#DE4373] text-xs font-semibold uppercase tracking-wider shadow-sm">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>The Bio & Journey</span>
+                <span>A Little About Me</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
-                About Me
-              </h2>
-              <p className="text-rose-200/90 text-sm sm:text-base font-medium leading-relaxed">
-                From picking up my first camera in high school to shooting tech summits, live concerts, sweeping landscapes, and heartfelt animal sessions.
-              </p>
+
             </div>
 
-            {/* Narrative Box with WobbleCard */}
             <WobbleCard
               containerClassName="bg-[#41242E] border border-white/10 shadow-xl"
-              className="p-6 sm:p-7 space-y-3.5"
+              className="p-6 sm:p-7 space-y-4"
             >
-              <p className="text-xs sm:text-sm leading-relaxed text-rose-100/90 font-normal">
-                Photography has been a part of my life since 10th grade. Even after becoming a software engineer, I’ve continued to make time for the camera because photography is something I genuinely love.
+              <p className="text-xs sm:text-sm leading-relaxed text-rose-100/90">
+                I’m a software developer who found another side of myself
+                through a camera. While technology is what I do professionally,
+                photography is what I genuinely love coming back to.
               </p>
-              <p className="text-xs sm:text-sm leading-relaxed text-rose-100/90 font-normal">
-                Now, I want to take that passion a step further. I’m available on weekends for events, pet photography, portraits, concerts, tech events, and more, and I’m always open to exploring something new.
+
+              <p className="text-xs sm:text-sm leading-relaxed text-rose-100/90">
+                Photography is my strongest creative skill. I love photo
+                shoots, portraits, events, and most importantly, capturing
+                moments as they naturally happen. I also enjoy videography,
+                cinematic shots, and editing — anything that lets me turn a
+                moment into something you can keep forever.
               </p>
+
+              <p className="text-xs sm:text-sm leading-relaxed text-rose-100/90">
+                What I enjoy most about a shoot is not just taking pictures.
+                It’s being around people, understanding what they want,
+                blending into the atmosphere, and making them comfortable
+                enough to forget the camera is even there.
+              </p>
+
               <p className="text-xs sm:text-sm leading-relaxed text-white font-medium">
-                I’m building my name in photography, one shoot at a time. If you like my work and have a project, event, or idea in mind, I’d love to be a part of it.
+                I’m available on weekends for photo shoots, events,
+                collaborations, and creative projects. If you have a moment
+                you want captured, come get it clicked. I’d love to be the
+                person behind the camera.
               </p>
             </WobbleCard>
 
-            {/* Core Pillars with WobbleCard interactive 3D physics */}
+            {/* What I Do */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+
+              {/* Photography */}
               <WobbleCard
                 containerClassName="bg-[#41242E] border border-white/5 hover:border-[#DE4373]/40 transition-colors"
                 className="p-4 space-y-1.5"
@@ -166,11 +182,14 @@ export const AboutSection: React.FC = () => {
                   <Camera className="w-4 h-4" />
                   <span>Photography</span>
                 </div>
+
                 <p className="text-xs text-rose-100/70 leading-relaxed">
-                  Portraits, tech summits, live concerts, furbabies, and landscapes.
+                  My strongest suit. Portraits, photo shoots, candid moments,
+                  events, people, pets, and everything in between.
                 </p>
               </WobbleCard>
 
+              {/* Videography */}
               <WobbleCard
                 containerClassName="bg-[#41242E] border border-white/5 hover:border-[#DE4373]/40 transition-colors"
                 className="p-4 space-y-1.5"
@@ -179,39 +198,48 @@ export const AboutSection: React.FC = () => {
                   <Video className="w-4 h-4" />
                   <span>Videography</span>
                 </div>
+
                 <p className="text-xs text-rose-100/70 leading-relaxed">
-                  Event highlight reels, stage motion, and dynamic short-form storytelling.
+                  Cinematic shots, reels, short-form videos, and visual
+                  storytelling with movement and atmosphere.
                 </p>
               </WobbleCard>
 
+              {/* Editing */}
               <WobbleCard
                 containerClassName="bg-[#41242E] border border-white/5 hover:border-[#DE4373]/40 transition-colors"
                 className="p-4 space-y-1.5"
               >
                 <div className="flex items-center gap-2 text-[#DE4373] text-xs font-bold uppercase tracking-wider">
-                  <Sliders className="w-4 h-4" />
-                  <span>Editing & Color Grading</span>
+                  <Aperture className="w-4 h-4" />
+                  <span>Editing</span>
                 </div>
+
                 <p className="text-xs text-rose-100/70 leading-relaxed">
-                  Custom Lightroom tone curves, color grading, and atmospheric moods.
+                  I love taking a good frame and giving it the final look,
+                  feeling, and character it deserves.
                 </p>
               </WobbleCard>
 
+              {/* People & Events */}
               <WobbleCard
                 containerClassName="bg-[#41242E] border border-white/5 hover:border-[#DE4373]/40 transition-colors"
                 className="p-4 space-y-1.5"
               >
                 <div className="flex items-center gap-2 text-[#DE4373] text-xs font-bold uppercase tracking-wider">
-                  <Cpu className="w-4 h-4" />
-                  <span>Camera & Other Gears</span>
+                  <Heart className="w-4 h-4" />
+                  <span>People & Events</span>
                 </div>
+
                 <p className="text-xs text-rose-100/70 leading-relaxed">
-                  Canon EOS R10 mirrorless rig with fast prime and zoom glass.
+                  Friendly, easy to work with, and comfortable blending into
+                  your event while capturing the moments that matter.
                 </p>
               </WobbleCard>
+
             </div>
 
-            {/* Action Links */}
+            {/* CTA */}
             <div className="pt-2 flex flex-wrap gap-3 items-center">
               <a
                 href="https://www.instagram.com/vaishnaviii_ii/"
@@ -221,7 +249,7 @@ export const AboutSection: React.FC = () => {
                 id="about-instagram-cta"
               >
                 <Instagram className="w-4 h-4" />
-                <span>Instagram @vaishnaviii_ii</span>
+                <span>See My Photography</span>
               </a>
 
               <a
@@ -231,20 +259,24 @@ export const AboutSection: React.FC = () => {
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#4E2835] hover:bg-[#5D3040] text-rose-100 hover:text-white border border-white/10 text-xs font-bold transition-all shadow"
                 id="about-behance-link"
               >
-                <span>Behance Profile</span>
+                <span>Behance Portfolio</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
 
           </div>
-
         </div>
 
-        {/* Gear & Hardware Setup */}
+        {/* Gear */}
         <div className="pt-10 border-t border-white/10">
           <div className="mb-6">
-            <span className="text-xs font-bold text-[#DE4373] uppercase tracking-wider">The Arsenal</span>
-            <h3 className="text-2xl font-bold text-white mt-1">Hardware & Optics Setup</h3>
+            <span className="text-xs font-bold text-[#DE4373] uppercase tracking-wider">
+              The Arsenal
+            </span>
+
+            <h3 className="text-2xl font-bold text-white mt-1">
+              Hardware & Optics Setup
+            </h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -261,9 +293,11 @@ export const AboutSection: React.FC = () => {
                       <span>{gear.category}</span>
                     </span>
                   </div>
+
                   <h4 className="text-base font-bold text-white group-hover:text-[#DE4373] transition-colors mb-2">
                     {gear.name}
                   </h4>
+
                   <p className="text-xs text-rose-100/75 leading-relaxed font-normal">
                     {gear.description}
                   </p>
@@ -277,3 +311,4 @@ export const AboutSection: React.FC = () => {
     </section>
   );
 };
+
