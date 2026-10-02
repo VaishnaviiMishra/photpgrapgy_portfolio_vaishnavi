@@ -70,7 +70,7 @@ export default function App() {
   const [lightboxPhoto, setLightboxPhoto]   = useState<Photo | null>(null);
   const [contactPrefilledService, setContactPrefilledService] = useState<string>('');
 
-  // ── Work Experience state ─────────────────────────────────────────────────
+  // ── Work Experience state (API-backed) ─────────────────────────────────
   const [experiences, setExperiences] = useState<WorkExperience[]>(() => {
     try {
       const saved = localStorage.getItem(WORK_STORAGE);
@@ -82,7 +82,7 @@ export default function App() {
     return [];
   });
 
-  // ── Reels (Best Clips) state ──────────────────────────────────────────────
+  // ── Reels (Best Clips) state (API-backed) ──────────────────────────────
   const [reels, setReels] = useState<Reel[]>(() => {
     try {
       const saved = localStorage.getItem(REEL_STORAGE);
@@ -91,20 +91,8 @@ export default function App() {
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
     } catch { /* ignore */ }
-    return DEFAULT_REELS;
+    return [];
   });
-
-  // Persist reels
-  useEffect(() => {
-    try { localStorage.setItem(REEL_STORAGE, JSON.stringify(reels)); }
-    catch (e) { console.error('Failed to persist reels', e); }
-  }, [reels]);
-
-  // Persist work experiences to localStorage
-  useEffect(() => {
-    try { localStorage.setItem(WORK_STORAGE, JSON.stringify(experiences)); }
-    catch (e) { console.error('Failed to persist work experiences', e); }
-  }, [experiences]);
 
   // ── Server data loader ────────────────────────────────────────────────────
   const loadServerData = async () => {
@@ -121,6 +109,30 @@ export default function App() {
         }
       }
     } catch (err) { console.warn('Could not load photos from database API:', err); }
+
+    // Load work experiences from API
+    try {
+      const res = await fetch('/api/work-experience', { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.experiences)) {
+          setExperiences(data.experiences);
+          try { localStorage.setItem(WORK_STORAGE, JSON.stringify(data.experiences)); } catch { /* ignore */ }
+        }
+      }
+    } catch (err) { console.warn('Could not load work experiences from API:', err); }
+
+    // Load reels from API
+    try {
+      const res = await fetch('/api/best-clips', { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.reels)) {
+          setReels(data.reels);
+          try { localStorage.setItem(REEL_STORAGE, JSON.stringify(data.reels)); } catch { /* ignore */ }
+        }
+      }
+    } catch (err) { console.warn('Could not load reels from API:', err); }
   };
 
   useEffect(() => { loadServerData(); }, [currentPath]);
@@ -157,20 +169,54 @@ export default function App() {
     }
   };
 
-  const handleAddExperience = (exp: WorkExperience) => {
+  const handleAddExperience = async (exp: WorkExperience) => {
     setExperiences(prev => [exp, ...prev]);
+    try {
+      const res = await fetch('/api/work-experience', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(exp),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.experiences)) {
+          setExperiences(data.experiences);
+          try { localStorage.setItem(WORK_STORAGE, JSON.stringify(data.experiences)); } catch { /* ignore */ }
+        }
+      }
+    } catch (err) { console.warn('Work experience API save failed:', err); }
   };
 
-  const handleDeleteExperience = (id: string) => {
+  const handleDeleteExperience = async (id: string) => {
     setExperiences(prev => prev.filter(e => e.id !== id));
+    try {
+      await fetch(`/api/work-experience?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+    } catch (err) { console.warn('Work experience API delete failed:', err); }
   };
 
-  const handleAddReel = (reel: Reel) => {
+  const handleAddReel = async (reel: Reel) => {
     setReels(prev => [...prev, reel]);
+    try {
+      const res = await fetch('/api/best-clips', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reel),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.reels)) {
+          setReels(data.reels);
+          try { localStorage.setItem(REEL_STORAGE, JSON.stringify(data.reels)); } catch { /* ignore */ }
+        }
+      }
+    } catch (err) { console.warn('Reels API save failed:', err); }
   };
 
-  const handleDeleteReel = (id: string) => {
+  const handleDeleteReel = async (id: string) => {
     setReels(prev => prev.filter(r => r.id !== id));
+    try {
+      await fetch(`/api/best-clips?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+    } catch (err) { console.warn('Reels API delete failed:', err); }
   };
 
   const handleExplorePortfolio = (category?: string) => {

@@ -89,7 +89,58 @@ function localApiPlugin() {
           return;
         }
 
+        // Handler for /api/work-experience
+        if (parsedUrl.pathname === '/api/work-experience') {
+          let body = '';
+          req.query = parsedUrl.query;
+          req.on('data', (chunk: any) => { body += chunk; });
+          req.on('end', async () => {
+            try {
+              if (body) req.body = JSON.parse(body);
+              const { default: handler } = await import('./api/work-experience.ts');
+              const customRes = {
+                status: (code: number) => { res.statusCode = code; return customRes; },
+                json: (data: any) => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(data)); return customRes; },
+                setHeader: (name: string, value: string) => { res.setHeader(name, value); return customRes; },
+                end: () => res.end(),
+              };
+              await handler(req, customRes);
+            } catch (err: any) {
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ error: err.message }));
+            }
+          });
+          return;
+        }
+
+        // Handler for /api/best-clips
+        if (parsedUrl.pathname === '/api/best-clips') {
+          let body = '';
+          req.query = parsedUrl.query;
+          req.on('data', (chunk: any) => { body += chunk; });
+          req.on('end', async () => {
+            try {
+              if (body) req.body = JSON.parse(body);
+              const { default: handler } = await import('./api/best-clips.ts');
+              const customRes = {
+                status: (code: number) => { res.statusCode = code; return customRes; },
+                json: (data: any) => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(data)); return customRes; },
+                setHeader: (name: string, value: string) => { res.setHeader(name, value); return customRes; },
+                end: () => res.end(),
+              };
+              await handler(req, customRes);
+            } catch (err: any) {
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ error: err.message }));
+            }
+          });
+          return;
+        }
+
         next();
+
       });
     },
   };
