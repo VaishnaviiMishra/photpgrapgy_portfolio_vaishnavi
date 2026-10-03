@@ -73,7 +73,7 @@ export const Hero: React.FC<HeroProps> = ({
 
             {/* Sub-quote */}
             <p className="text-base sm:text-lg lg:text-xl text-rose-100/90 font-normal leading-relaxed max-w-2xl">
-              "I'm a software engineer by profession and a visual storyteller at heart. From cinematic concert films and intimate portraits — human and pets alike — to curated photo shoots, I capture moments that matter."
+              "I'm a software engineer by profession and a visual storyteller at heart. From cinematic concert films and intimate portraits (human and pets alike) to curated photo shoots, I capture moments that matter."
             </p>
 
             {/* Topic pills */}
@@ -111,80 +111,80 @@ export const Hero: React.FC<HeroProps> = ({
 
               {/* ── Best Clips — hover dropdown (only when reels exist) ── */}
               {activeReels.length > 0 && (
-              <div
-                className="relative"
-                onMouseEnter={() => setClipsOpen(true)}
-                onMouseLeave={() => setClipsOpen(false)}
-              >
-                {/* Dropdown panel — appears above the button */}
                 <div
-                  className={`
+                  className="relative"
+                  onMouseEnter={() => setClipsOpen(true)}
+                  onMouseLeave={() => setClipsOpen(false)}
+                >
+                  {/* Dropdown panel — appears above the button */}
+                  <div
+                    className={`
                     absolute bottom-[calc(100%+10px)] left-0
                     w-72 rounded-2xl overflow-hidden
                     bg-[#2A131A]/95 backdrop-blur-md
                     border border-[#DE4373]/30 shadow-2xl shadow-black/60
                     transition-all duration-200 origin-bottom-left z-50
                     ${clipsOpen
-                      ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
-                      : 'opacity-0 scale-95 translate-y-2 pointer-events-none'}
+                        ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
+                        : 'opacity-0 scale-95 translate-y-2 pointer-events-none'}
                   `}
-                >
-                  {/* Header */}
-                  <div className="px-4 py-3 border-b border-white/10 flex items-center gap-2">
-                    <Film className="w-3.5 h-3.5 text-[#DE4373]" />
-                    <span className="text-[#DE4373] text-[11px] font-bold uppercase tracking-widest">
-                      Best Clips
-                    </span>
+                  >
+                    {/* Header */}
+                    <div className="px-4 py-3 border-b border-white/10 flex items-center gap-2">
+                      <Film className="w-3.5 h-3.5 text-[#DE4373]" />
+                      <span className="text-[#DE4373] text-[11px] font-bold uppercase tracking-widest">
+                        Best Clips
+                      </span>
+                    </div>
+
+                    {/* Reel list */}
+                    <ul className="py-1">
+                      {activeReels.map((reel, i) => (
+                        <li key={i}>
+                          <a
+                            href={reel.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="group/item flex items-center justify-between px-4 py-3 hover:bg-[#DE4373]/15 transition-colors duration-150"
+                          >
+                            <span className="text-rose-100 text-sm font-medium group-hover/item:text-white transition-colors leading-tight pr-2">
+                              {reel.title}
+                            </span>
+                            <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[#3E232B] border border-[#DE4373]/30 group-hover/item:bg-[#DE4373] group-hover/item:border-[#DE4373] flex items-center justify-center transition-all duration-150">
+                              <ExternalLink className="w-3.5 h-3.5 text-[#DE4373] group-hover/item:text-white transition-colors" />
+                            </span>
+                          </a>
+                          {i < activeReels.length - 1 && (
+                            <div className="mx-4 border-b border-white/5" />
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Footer hint */}
+                    <div className="px-4 py-2.5 border-t border-white/10 bg-[#1E0E14]/50">
+                      <p className="text-rose-300/50 text-[10px]">
+                        Opens on Instagram ↗
+                      </p>
+                    </div>
                   </div>
 
-                  {/* Reel list */}
-                  <ul className="py-1">
-                    {activeReels.map((reel, i) => (
-                      <li key={i}>
-                        <a
-                          href={reel.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="group/item flex items-center justify-between px-4 py-3 hover:bg-[#DE4373]/15 transition-colors duration-150"
-                        >
-                          <span className="text-rose-100 text-sm font-medium group-hover/item:text-white transition-colors leading-tight pr-2">
-                            {reel.title}
-                          </span>
-                          <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[#3E232B] border border-[#DE4373]/30 group-hover/item:bg-[#DE4373] group-hover/item:border-[#DE4373] flex items-center justify-center transition-all duration-150">
-                            <ExternalLink className="w-3.5 h-3.5 text-[#DE4373] group-hover/item:text-white transition-colors" />
-                          </span>
-                        </a>
-                        {i < activeReels.length - 1 && (
-                          <div className="mx-4 border-b border-white/5" />
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Footer hint */}
-                  <div className="px-4 py-2.5 border-t border-white/10 bg-[#1E0E14]/50">
-                    <p className="text-rose-300/50 text-[10px]">
-                      Opens on Instagram ↗
-                    </p>
-                  </div>
-                </div>
-
-                {/* The button itself */}
-                <button
-                  id="hero-clips-btn"
-                  className={`px-7 py-3.5 rounded-full text-white text-sm font-semibold border transition-all flex items-center gap-2 cursor-pointer shadow-md
+                  {/* The button itself */}
+                  <button
+                    id="hero-clips-btn"
+                    className={`px-7 py-3.5 rounded-full text-white text-sm font-semibold border transition-all flex items-center gap-2 cursor-pointer shadow-md
                     ${clipsOpen
-                      ? 'bg-[#5D3040] border-[#DE4373]/50'
-                      : 'bg-[#4E2835] border-white/10 hover:bg-[#5D3040] hover:border-[#DE4373]/50'}
+                        ? 'bg-[#5D3040] border-[#DE4373]/50'
+                        : 'bg-[#4E2835] border-white/10 hover:bg-[#5D3040] hover:border-[#DE4373]/50'}
                   `}
-                >
-                  <Film className="w-4 h-4 text-[#DE4373]" />
-                  <span>Best Clips</span>
-                  <ArrowRight
-                    className={`w-4 h-4 text-[#DE4373] transition-transform duration-200 ${clipsOpen ? 'rotate-[-90deg]' : ''}`}
-                  />
-                </button>
-              </div>
+                  >
+                    <Film className="w-4 h-4 text-[#DE4373]" />
+                    <span>Best Clips</span>
+                    <ArrowRight
+                      className={`w-4 h-4 text-[#DE4373] transition-transform duration-200 ${clipsOpen ? 'rotate-[-90deg]' : ''}`}
+                    />
+                  </button>
+                </div>
               )}
               {/* ── end Best Clips ──────────────────────────────────────── */}
 
