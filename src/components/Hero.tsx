@@ -66,7 +66,7 @@ export const Hero: React.FC<HeroProps> = ({
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[0.98]">
               Vaishnavi <br />
               Mishra <br />
-              <span className="bg-gradient-to-r from-[#DE4373] via-[#E84E7E] to-[#F06292] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#F06292] via-[#F8A5C2] to-[#FECDD3] bg-clip-text text-transparent">
                 Photographer &amp; Cinematographer
               </span>
             </h1>

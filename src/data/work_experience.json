@@ -1,0 +1,47 @@
+[
+  {
+    "id": "work-1791034156340-2fhn",
+    "heading": "Riyaraah",
+    "brief": "Brand shoot for a clothing brand",
+    "imageUrl": "blob:http://localhost:3000/0d57913c-dd54-429f-a502-a3a0bbb77b05",
+    "link": "https://drive.google.com/drive/folders/1efAa0ud_xIfyV0qxVqfWMj1EDOdHY1GS",
+    "linkLabel": "View Project",
+    "isUserAdded": true
+  },
+  {
+    "id": "work-1791033368709-m6td",
+    "heading": "Music Video",
+    "brief": "Scripted, Directed and created a short music video with a story for song Aarzu",
+    "imageUrl": "https://res.cloudinary.com/dcilsfof2/image/upload/v1791033329/146155_cep68j.jpg",
+    "link": "https://drive.google.com/drive/folders/1kCdYr2gIASAn2QNI8A1T8VPb-DKw3uZG",
+    "linkLabel": "View Project",
+    "isUserAdded": true
+  },
+  {
+    "id": "work-1790937530389-3yxe",
+    "heading": "One | Many",
+    "brief": "Art Exhibition",
+    "imageUrl": "https://res.cloudinary.com/dcilsfof2/image/upload/v1790937494/20260830_172101_vpcwi8.jpg",
+    "link": "https://www.instagram.com/reel/DcrA4S0iEag/?utm_source=ig_web_copy_link&stkn=MzRlODBiNWFlZA==",
+    "linkLabel": "View Project",
+    "isUserAdded": true
+  },
+  {
+    "id": "work-1790937481525-x7dk",
+    "heading": "Raftaar Concert",
+    "brief": "Covered the concert by Raftaar and Deep Kalsi",
+    "imageUrl": "https://res.cloudinary.com/dcilsfof2/image/upload/v1790937422/behance_project_1714277524575_czkut6.jpg",
+    "link": "https://www.instagram.com/p/C6Q40X1Ph81/?utm_source=ig_web_copy_link&stkn=MzRlODBiNWFlZA==",
+    "linkLabel": "View Project",
+    "isUserAdded": true
+  },
+  {
+    "id": "work-1790937374859-qawa",
+    "heading": "Tech Events",
+    "brief": "Covered Multiple tech events in Delhi",
+    "imageUrl": "https://res.cloudinary.com/dcilsfof2/image/upload/v1790937311/IMG_2520_tfpurk.jpg",
+    "link": "https://www.instagram.com/p/DcdcysPk32u/?utm_source=ig_web_copy_link&stkn=MzRlODBiNWFlZA==",
+    "linkLabel": "View Project",
+    "isUserAdded": true
+  }
+]
