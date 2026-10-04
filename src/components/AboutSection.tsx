@@ -12,6 +12,11 @@ import {
   Video,
   Aperture,
   Heart,
+  Clapperboard,
+  Music2,
+  Mountain,
+  PawPrint,
+  Users,
 } from 'lucide-react';
 import { GEAR_DATA } from '../data/services';
 import vaishnaviImage from '../../assets/vaishnavi.jpg';
@@ -137,6 +142,7 @@ export const AboutSection: React.FC = () => {
 
             </div>
 
+            {/* About Me */}
             <WobbleCard
               containerClassName="bg-[#41242E] border border-white/10 shadow-xl"
               className="p-6 sm:p-7 space-y-4"
@@ -171,72 +177,30 @@ export const AboutSection: React.FC = () => {
             </WobbleCard>
 
             {/* What I Do */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-
-              {/* Photography */}
-              <WobbleCard
-                containerClassName="bg-[#41242E] border border-white/5 hover:border-[#DE4373]/40 transition-colors"
-                className="p-4 space-y-1.5"
-              >
-                <div className="flex items-center gap-2 text-[#DE4373] text-xs font-bold uppercase tracking-wider">
-                  <Camera className="w-4 h-4" />
-                  <span>Photography</span>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { icon: <Camera className="w-4 h-4" />,      label: 'Photography' },
+                { icon: <Clapperboard className="w-4 h-4" />, label: 'Cinematography' },
+                { icon: <Video className="w-4 h-4" />,       label: 'Videography' },
+                { icon: <Heart className="w-4 h-4" />,       label: 'Portraits' },
+                { icon: <PawPrint className="w-4 h-4" />,    label: 'Pet Shoots' },
+                { icon: <Music2 className="w-4 h-4" />,      label: 'Concerts' },
+                { icon: <Mountain className="w-4 h-4" />,    label: 'Landscapes' },
+                { icon: <Users className="w-4 h-4" />,       label: 'Candid' },
+                { icon: <Aperture className="w-4 h-4" />,    label: 'Editing' },
+              ].map(({ icon, label }) => (
+                <div
+                  key={label}
+                  className="group flex flex-row items-center gap-2 px-3 py-2 rounded-xl bg-[#41242E] border border-white/5 hover:border-[#DE4373]/50 hover:bg-[#4E2835] transition-all duration-200 cursor-default"
+                >
+                  <span className="text-[#DE4373] shrink-0 group-hover:scale-110 transition-transform duration-200">
+                    {icon}
+                  </span>
+                  <span className="text-[10px] font-semibold text-rose-100/80 group-hover:text-white transition-colors leading-none">
+                    {label}
+                  </span>
                 </div>
-
-                <p className="text-xs text-rose-100/70 leading-relaxed">
-                  My strongest suit. Portraits, photo shoots, candid moments,
-                  events, people, pets, and everything in between.
-                </p>
-              </WobbleCard>
-
-              {/* Videography */}
-              <WobbleCard
-                containerClassName="bg-[#41242E] border border-white/5 hover:border-[#DE4373]/40 transition-colors"
-                className="p-4 space-y-1.5"
-              >
-                <div className="flex items-center gap-2 text-[#DE4373] text-xs font-bold uppercase tracking-wider">
-                  <Video className="w-4 h-4" />
-                  <span>Videography</span>
-                </div>
-
-                <p className="text-xs text-rose-100/70 leading-relaxed">
-                  Cinematic shots, reels, short-form videos, and visual
-                  storytelling with movement and atmosphere.
-                </p>
-              </WobbleCard>
-
-              {/* Editing */}
-              <WobbleCard
-                containerClassName="bg-[#41242E] border border-white/5 hover:border-[#DE4373]/40 transition-colors"
-                className="p-4 space-y-1.5"
-              >
-                <div className="flex items-center gap-2 text-[#DE4373] text-xs font-bold uppercase tracking-wider">
-                  <Aperture className="w-4 h-4" />
-                  <span>Editing</span>
-                </div>
-
-                <p className="text-xs text-rose-100/70 leading-relaxed">
-                  I love taking a good frame and giving it the final look,
-                  feeling, and character it deserves.
-                </p>
-              </WobbleCard>
-
-              {/* People & Events */}
-              <WobbleCard
-                containerClassName="bg-[#41242E] border border-white/5 hover:border-[#DE4373]/40 transition-colors"
-                className="p-4 space-y-1.5"
-              >
-                <div className="flex items-center gap-2 text-[#DE4373] text-xs font-bold uppercase tracking-wider">
-                  <Heart className="w-4 h-4" />
-                  <span>People & Events</span>
-                </div>
-
-                <p className="text-xs text-rose-100/70 leading-relaxed">
-                  Friendly, easy to work with, and comfortable blending into
-                  your event while capturing the moments that matter.
-                </p>
-              </WobbleCard>
-
+              ))}
             </div>
 
             {/* CTA */}

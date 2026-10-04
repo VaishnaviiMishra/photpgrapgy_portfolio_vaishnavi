@@ -66,7 +66,7 @@ export default function App() {
     return INITIAL_PHOTOS;
   });
 
-  const [activeCategory, setActiveCategory] = useState<string>('tech');
+  const [activeCategory, setActiveCategory] = useState<string>('portraits');
   const [lightboxPhoto, setLightboxPhoto]   = useState<Photo | null>(null);
   const [contactPrefilledService, setContactPrefilledService] = useState<string>('');
 
