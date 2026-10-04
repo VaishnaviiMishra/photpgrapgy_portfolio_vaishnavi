@@ -73,8 +73,10 @@ export const Hero: React.FC<HeroProps> = ({
 
             {/* Sub-quote */}
             <p className="text-base sm:text-lg lg:text-xl text-rose-100/90 font-normal leading-relaxed max-w-2xl">
-              I'm a software engineer by profession and a photographer at heart. From scenic landscapes and candid moments to portraits of people and animals, I love capturing the little details, emotions, and moments that make a memory worth keeping.
-            </p>
+              Software Engineer by profession. Photographer by passion. <br />
+              From scenic landscapes and candid moments to portraits of people and pets, I love capturing the little details, emotions, and moments that make a memory worth keeping.
+            </ p>
+
 
             {/* Topic pills */}
             <div className="flex flex-wrap items-center gap-2">
