@@ -73,14 +73,14 @@ export const Hero: React.FC<HeroProps> = ({
 
             {/* Sub-quote */}
             <p className="text-base sm:text-lg lg:text-xl text-rose-100/90 font-normal leading-relaxed max-w-2xl">
-              "I'm a software engineer by profession and a visual storyteller at heart. From cinematic concert films and intimate portraits (human and pets alike) to curated photo shoots, I capture moments that matter."
+              I'm a software engineer by profession and a photographer at heart. From scenic landscapes and candid moments to portraits of people and animals, I love capturing the little details, emotions, and moments that make a memory worth keeping.
             </p>
 
             {/* Topic pills */}
             <div className="flex flex-wrap items-center gap-2">
               {[
                 { label: 'Cinematography', icon: <Clapperboard className="w-3.5 h-3.5" /> },
-                { label: 'Portrait — Human & Pets', icon: <User2 className="w-3.5 h-3.5" /> },
+                { label: 'Portraits', icon: <User2 className="w-3.5 h-3.5" /> },
                 { label: 'Photo Shoot', icon: <Camera className="w-3.5 h-3.5" /> },
                 { label: 'Concerts & Live Events', icon: <Music2 className="w-3.5 h-3.5" /> },
               ].map(({ label, icon }) => (
@@ -205,10 +205,7 @@ export const Hero: React.FC<HeroProps> = ({
                   className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#261218]/80 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#2A131A]/90 backdrop-blur-md border border-white/10 text-white text-[11px] font-medium tracking-wider whitespace-nowrap shadow-lg flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#DE4373]" />
-                  <span>{photoCount}+ Curated Clicks</span>
-                </div>
+
               </div>
             </div>
 
